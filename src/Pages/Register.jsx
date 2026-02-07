@@ -8,7 +8,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const {
     createUserWithEmailAndPasswordFunc, 
-    googleLoginFunc,
+    
     updateProfileFunc,
     signoutUserFunc,
     setUser,
@@ -47,6 +47,7 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
             signoutUserFunc().then(() => {
               toast.success("Signup successful! Please login.");
               setUser(null);
+              navigate('/login')
              
             });
           })
@@ -58,49 +59,128 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
 
 
 
-  const handleGoogleLogin = () => {
-    googleLoginFunc()
-      .then((res) => {
-        setUser(res.user);
-        toast.success("Logged in with Google!");
-        navigate("/");
-
-
-      })
-      .catch((err) => toast.error(err.message));
-  };
+ 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-6 rounded-md shadow-md">
-        <h2 className="text-2xl font-semibold text-center mb-4">Register</h2>
+   <div className="auth-container">
+      <div className="auth-card">
+        {/* Header */}
+        <div className="auth-header">
+          <div className="auth-logo">🩸 BloodConnect</div>
+          <h2 className="auth-title">Create Account</h2>
+          <p className="auth-subtitle">
+            Join our blood donation community
+          </p>
+        </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <label className="label">Your Name</label>
-          <input type="text" name="name" placeholder="Your Name" className="w-full p-2 border rounded" required />
-          <label className="label">Photo</label>
-          <input type="file" name="photoUrl" placeholder="Photo URL" className="w-full p-2 border rounded" required />
-          <label className="label">Your Email</label>
-          <input type="email" name="email" placeholder="Email" className="w-full p-2 border rounded" required />
-          <div className="relative">
-            <label className="label">Password</label>
+        {/* Form */}
+        <form onSubmit={handleRegister}>
+          {/* Full Name */}
+          <div className="form-group">
+            <label className="form-label">Full Name</label>
             <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              className="w-full p-2 border rounded"
-              required
+              type="text"
+              className="form-input"
+              placeholder="John Doe"
             />
-            <span className="absolute right-2 top-8 cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? "Hide" : "Show"}
+          </div>
+
+          {/* Email */}
+          <div className="form-group">
+            <label className="form-label">Email Address</label>
+            <input
+              type="email"
+              className="form-input"
+              placeholder="your.email@example.com"
+            />
+          </div>
+
+          
+        
+            <div className="form-group relative">
+              <label className="form-label">Password</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-input"
+                placeholder="Min. 6 characters"
+              />
+              <span className="absolute right-2 top-8 cursor-pointer" onClick={()=> setShowPassword(!showPassword)}>
+                {showPassword ? "Hide" : "Show"}
+              </span>
+            </div>
+
+            
+          
+
+          
+          <div className="grid grid-cols-2" style={{ gap: "1rem" }}>
+            <div className="form-group">
+              <label className="form-label">Phone Number</label>
+              <input
+                type="tel"
+                className="form-input"
+                placeholder="01XXXXXXXXX"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Blood Group</label>
+              <select className="form-select">
+                <option>Select Blood Group</option>
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+                <option>O+</option>
+                <option>O-</option>
+              </select>
+            </div>
+          </div>
+
+          
+          <div className="grid grid-cols-2" style={{ gap: "1rem" }}>
+            <div className="form-group">
+              <label className="form-label">District</label>
+              <select className="form-select">
+                <option>Select District</option>
+                <option>Dhaka</option>
+                <option>Chattogram</option>
+                <option>Rajshahi</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Upazila</label>
+              <select className="form-select">
+                <option>Select Upazila</option>
+              </select>
+            </div>
+          </div>
+
+         
+          <div className="form-group">
+            <label className="form-label">Register As</label>
+            <select className="form-select">
+              <option>Donor</option>
+              <option>Volunteer</option>
+            </select>
+            <span className="form-hint">
+              Donors donate blood, Volunteers help organize events
             </span>
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">Register</button>
-          <button type="button" onClick={handleGoogleLogin} className="w-full bg-red-500 text-white py-2 rounded">Continue with Google</button>
-          <p className="text-center text-sm mt-2">
-            Already have an account? <Link to="/login" className="text-blue-500 underline">Login</Link>
-          </p>
+
+         
+          <button type="button" className="btn btn-primary w-full">
+            Create Account
+          </button>
         </form>
+
+      
+        <div className="auth-footer">
+          Already have an account? <Link to="/login">Login here</Link>
+        </div>
       </div>
     </div>
   );

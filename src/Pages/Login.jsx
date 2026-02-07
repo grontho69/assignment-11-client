@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { signInWithEmailAndPasswordFunc, googleLoginFunc, setUser, user } = useContext(AuthContext);
+  const { signInWithEmailAndPasswordFunc,  setUser, user } = useContext(AuthContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,62 +34,47 @@ const Login = () => {
       });
   };
 
-  const handleGoogleLogin = () => {
-    googleLoginFunc()
-      .then((res) => {
-        setUser(res.user);
-        toast.success("Logged in with Google!");
-        navigate(from);
-      })
-      .catch((err) => {
-        console.error(err.code);
-        toast.error(err.code);
-      });
-  };
+ 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-6 rounded-md shadow-md">
-        <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input type="email" name="email" placeholder="Email" className="w-full p-2 border rounded" required />
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              className="w-full p-2 border rounded"
-              required
-            />
-            <span
-              className="absolute right-2 top-2 cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </span>
-          </div>
-
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
-            Login
-          </button>
-
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full bg-red-500 text-white py-2 rounded"
-          >
-            Continue with Google
-          </button>
-
-          <p className="text-center text-sm mt-2">
-            Don’t have an account?{" "}
-            <Link to="/register" className="text-blue-500 underline">Register</Link>
-          </p>
-        </form>
-      </div>
+  <div className="auth-container">
+  <div className="auth-card">
+    {/* Header */}
+    <div className="auth-header">
+      <div className="auth-logo">🩸 BloodConnect</div>
+      <h2 className="auth-title">Welcome Back</h2>
+      <p className="auth-subtitle">Login to your account</p>
     </div>
+
+    {/* Form */}
+    <form onSubmit={handleLogin}>
+      <div className="form-group">
+        <label className="form-label">Email Address</label>
+        <input type="email" className="form-input" placeholder="your.email@example.com" />
+      </div>
+
+      <div className="form-group relative">
+        <label className="form-label">Password</label>
+        <input  type={showPassword ? "text" : "password"}className="form-input" placeholder="Enter your password" />
+        <span className="absolute right-2 top-8 cursor-pointer" onClick={()=> setShowPassword(!showPassword)}>
+          {showPassword ? "Hide" : "Show"}
+        </span>
+      </div>
+
+      <button type="button" className="btn btn-primary w-full">
+        Login
+      </button>
+    </form>
+
+   
+
+    {/* Footer */}
+    <div className="auth-footer">
+      Don&apos;t have an account?
+      <Link to="/register">Register here</Link>
+    </div>
+  </div>
+</div>
   );
 };
 

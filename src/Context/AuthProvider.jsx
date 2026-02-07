@@ -9,7 +9,8 @@ import {
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
-import auth from "../Firebase/Firebase.config";
+
+import  auth  from './../Firebase/Firebase.config';
 
 
 
@@ -69,7 +70,7 @@ const AuthProvider = ({ children }) => {
     signoutUserFunc,
   };
 
-  return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
+  return <AuthContext value={authInfo}>{children}</AuthContext>;
 };
 
 export default AuthProvider;
