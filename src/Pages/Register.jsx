@@ -23,7 +23,9 @@ const Register = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const file = photoUrl.files[0]
-    console.log(file)
+    const phone = e.target.phone.value
+const role = e.target.role.value
+    
 
     const passCheck = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
     if (!passCheck.test(password)) {
@@ -45,7 +47,11 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
       name,
       mainPhotoUrl,
       password,
-}
+      phone,
+      role
+
+    }
+  
 
     
     if (res.data.success === true) {
@@ -155,8 +161,7 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
                 placeholder="01XXXXXXXXX"
               />
             </div>
-
-            <div className="form-group">
+{/* <div className="form-group">
               <label className="form-label">Blood Group</label>
               <select className="form-select">
                 <option>Select Blood Group</option>
@@ -169,11 +174,12 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
                 <option>O+</option>
                 <option>O-</option>
               </select>
-            </div>
+            </div> */}
+            
           </div>
 
           
-          <div className="grid grid-cols-2" style={{ gap: "1rem" }}>
+          {/*  <div className="grid grid-cols-2" style={{ gap: "1rem" }}>
             <div className="form-group">
               <label className="form-label">District</label>
               <select className="form-select">
@@ -190,14 +196,15 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
                 <option>Select Upazila</option>
               </select>
             </div>
-          </div>
+          </div> */}
 
          
           <div className="form-group">
             <label className="form-label">Register As</label>
-            <select className="form-select">
-              <option>Donor</option>
-              <option>Volunteer</option>
+            <select className="form-select"
+            name="role">
+              <option value="donor">Donor</option>
+              <option value="volunteer">Volunteer</option>
             </select>
             <span className="form-hint">
               Donors donate blood, Volunteers help organize events

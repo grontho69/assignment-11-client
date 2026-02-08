@@ -59,7 +59,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  max-width: 1200px;
+  
   margin: 0 auto;
 }
 
@@ -724,6 +724,7 @@ body {
   color: var(--bg-light);
   padding: 3rem 1rem 1.5rem;
   margin-top: 4rem;
+  align-items: center;
 }
 
 .footer-content {
@@ -756,12 +757,16 @@ body {
 }
 
 .footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
   padding-top: 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-light);
   font-size: 0.875rem;
 }
+
+
 
 /* Modal/Dialog */
 .modal-overlay {

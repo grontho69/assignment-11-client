@@ -83,6 +83,7 @@ const AuthProvider = ({ children }) => {
     signInWithEmailAndPasswordFunc,
     googleLoginFunc,
     signoutUserFunc,
+    role
   };
 
   return <AuthContext value={authInfo}>{children}</AuthContext>;
