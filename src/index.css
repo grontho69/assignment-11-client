@@ -724,14 +724,15 @@ body {
   color: var(--bg-light);
   padding: 3rem 1rem 1.5rem;
   margin-top: 4rem;
-  align-items: center;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -750,6 +751,8 @@ body {
   display: block;
   margin-bottom: 0.5rem;
   line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .footer-section a:hover {
@@ -757,8 +760,6 @@ body {
 }
 
 .footer-bottom {
-  max-width: 1200px;
-  margin: 0 auto;
   text-align: center;
   padding-top: 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
