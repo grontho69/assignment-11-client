@@ -19,10 +19,10 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     const name = e.target.name.value;
-    const photoURL = e.target.photoUrl;
+    const photoUrl = e.target.photoUrl;
     const email = e.target.email.value;
     const password = e.target.password.value;
-    const file = photoURL.files[0]
+    const file = photoUrl.files[0]
     console.log(file)
 
     const passCheck = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
@@ -33,19 +33,34 @@ const Register = () => {
       return;
     }
 
-const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677d5dbde5340322dd7c', { image: file }, {
+const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade9dbfbce13a28e3e0d`, { image: file }, {
       headers: {
       'Content-Type':'multipart/form-data'
       }
     })
-  const mainPhotoURL = res.data.data.display_url
+    const mainPhotoUrl = res.data.data.display_url
+
+    const formData = {
+      email,
+      name,
+      mainPhotoUrl,
+      password,
+}
+
     
-    createUserWithEmailAndPasswordFunc(email, password)
+    if (res.data.success === true) {
+        createUserWithEmailAndPasswordFunc(email, password)
       .then(() => {
-        updateProfileFunc(name, mainPhotoURL)
+        updateProfileFunc(name, mainPhotoUrl)
           .then(() => {
             signoutUserFunc().then(() => {
               toast.success("Signup successful! Please login.");
+              axios.post('http://localhost:3000/user', formData)
+                .then(res => {
+                console.log(res.data)
+                }).catch(err => {
+                console.log(err)
+              })
               setUser(null);
               navigate('/login')
              
@@ -55,6 +70,9 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
       })
       .catch((err) => toast.error(err.message));
   };
+    }
+    
+  
 
 
 
@@ -80,6 +98,7 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
             <label className="form-label">Full Name</label>
             <input
               type="text"
+              name="name"
               className="form-input"
               placeholder="John Doe"
             />
@@ -90,8 +109,20 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
             <label className="form-label">Email Address</label>
             <input
               type="email"
+              name="email"
               className="form-input"
               placeholder="your.email@example.com"
+            />
+          </div>
+
+
+           <div className="form-group">
+            <label className="form-label">Photo</label>
+            <input
+              type="file"
+              name="photoUrl"
+              className="form-input"
+              placeholder="choose a photo"
             />
           </div>
 
@@ -100,7 +131,8 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
             <div className="form-group relative">
               <label className="form-label">Password</label>
               <input
-                type={showPassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
+              name="password"
                 className="form-input"
                 placeholder="Min. 6 characters"
               />
@@ -118,6 +150,7 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
               <label className="form-label">Phone Number</label>
               <input
                 type="tel"
+                name="phone"
                 className="form-input"
                 placeholder="01XXXXXXXXX"
               />
@@ -172,7 +205,7 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
           </div>
 
          
-          <button type="button" className="btn btn-primary w-full">
+          <button type="submit" className="btn btn-primary w-full">
             Create Account
           </button>
         </form>
@@ -187,3 +220,5 @@ const res = await axios.post('https://api.imgbb.com/1/upload?key=f44db395c371677
 };
 
 export default Register;
+
+

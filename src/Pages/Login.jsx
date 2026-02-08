@@ -19,8 +19,8 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const email = e.target.email.value.trim();
-    const password = e.target.password.value.trim();
+    const email = e.target.email.value
+    const password = e.target.password.value
 
     signInWithEmailAndPasswordFunc(email, password)
       .then((res) => {
@@ -30,7 +30,7 @@ const Login = () => {
       })
       .catch((err) => {
         console.error(err.code);
-        toast.error(err.code); // Clear error message
+        toast.error(err.code); 
       });
   };
 
@@ -50,18 +50,22 @@ const Login = () => {
     <form onSubmit={handleLogin}>
       <div className="form-group">
         <label className="form-label">Email Address</label>
-        <input type="email" className="form-input" placeholder="your.email@example.com" />
+            <input type="email"
+              name="email"
+              className="form-input" placeholder="your.email@example.com" />
       </div>
 
       <div className="form-group relative">
         <label className="form-label">Password</label>
-        <input  type={showPassword ? "text" : "password"}className="form-input" placeholder="Enter your password" />
+            <input type={showPassword ? "text" : "password"}
+              name="password"
+              className="form-input" placeholder="Enter your password" />
         <span className="absolute right-2 top-8 cursor-pointer" onClick={()=> setShowPassword(!showPassword)}>
           {showPassword ? "Hide" : "Show"}
         </span>
       </div>
 
-      <button type="button" className="btn btn-primary w-full">
+      <button type="submit" className="btn btn-primary w-full">
         Login
       </button>
     </form>

@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 
 import  auth  from './../Firebase/Firebase.config';
+import axios from "axios";
 
 
 
@@ -18,6 +19,7 @@ import  auth  from './../Firebase/Firebase.config';
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [role,setRole]= useState('')
 
   // Create user
   const createUserWithEmailAndPasswordFunc = (email, password,) => {
@@ -49,14 +51,27 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  
+
   // Check auth state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+    
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) return
+     axios.get(`http://localhost:3000/user/role/${user.email}`)
+        .then(res => {
+          setRole(res.data.role)
+          
+        })
+  }, [user])
+  console.log(role)
 
   const authInfo = {
     user,
