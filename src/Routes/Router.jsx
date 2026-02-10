@@ -5,6 +5,9 @@ import Login from "../Pages/Login";
 import Register from "../Pages/Register";
 import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
+import DashAside from "../Components/DashAside/DashAside";
+import Profile from "../Pages/Dashboard/profile";
+import CreateRequest from "../Pages/Dashboard/CreateRequest";
 
 const router = createBrowserRouter([
   {
@@ -29,11 +32,23 @@ const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <DashboardLayout></DashboardLayout>,
+    element: <DashAside/>,
     children: [{
       path: 'main',
       element:<MainDashboard/>
-    }]
+    },
+    {
+      path:'profile',
+      element:<Profile/>
+      },
+      {
+        path: 'create-request',
+      element:<CreateRequest/>  
+      }
+    
+    
+    
+    ]
   }
 ]);
 export default router;

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import {
   Home,
   User,
@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { AuthContext } from "../../Context/AuthContext";
+import MainDashboard from "../../Pages/Dashboard/MainDashboard";
 
 
 const NavItem = ({ to, icon: Icon, label, onClick }) => {
@@ -31,7 +32,7 @@ const NavItem = ({ to, icon: Icon, label, onClick }) => {
 };
 
 
-const DashAside = ({ children }) => {
+const DashAside = () => {
   const { user, signoutUserFunc } = useContext(AuthContext);
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -96,6 +97,12 @@ const DashAside = ({ children }) => {
             to="/dashboard/profile"
             icon={User}
             label="My Profile"
+            onClick={closeSidebar}
+          />
+          <NavItem
+            to="/dashboard/create-request"
+            icon={PlusCircle}
+            label="Create Request"
             onClick={closeSidebar}
           />
 
@@ -177,7 +184,7 @@ const DashAside = ({ children }) => {
           </button>
         </div>
 
-        <div className="dashboard-content">{children}</div>
+        <div className="dashboard-content"><Outlet/></div>
       </main>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {  Link, useNavigate } from "react-router";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
@@ -13,6 +13,23 @@ const Register = () => {
     signoutUserFunc,
     setUser,
   } = useContext(AuthContext);
+  const [upazilas, setUpazilas] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [district, setDistrict] = useState('')
+   const [upazila, setUpazila] = useState([])
+  
+  useEffect(() => {
+    axios.get('./upazila.json')
+      .then(res => {
+        setUpazilas(res.data.upazilas)
+      })
+     axios.get('./district.json')
+      .then(res => {
+        setDistricts(res.data.districts)
+      })
+    
+  }, [])
+  
 
   const navigate = useNavigate();
 
@@ -24,8 +41,8 @@ const Register = () => {
     const password = e.target.password.value;
     const file = photoUrl.files[0]
     const phone = e.target.phone.value
-const role = e.target.role.value
-    
+    const role = e.target.role.value
+    const blood = e.target.blood.value    
 
     const passCheck = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
     if (!passCheck.test(password)) {
@@ -48,11 +65,14 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
       mainPhotoUrl,
       password,
       phone,
-      role
+      role,
+      blood,
+      district,
+      upazila
 
     }
   
-
+console.log(formData)
     
     if (res.data.success === true) {
         createUserWithEmailAndPasswordFunc(email, password)
@@ -68,7 +88,7 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
                 console.log(err)
               })
               setUser(null);
-              navigate('/login')
+             // navigate('/login')
              
             });
           })
@@ -161,42 +181,47 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
                 placeholder="01XXXXXXXXX"
               />
             </div>
-{/* <div className="form-group">
+
+          <div className="form-group">
               <label className="form-label">Blood Group</label>
-              <select className="form-select">
-                <option>Select Blood Group</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>AB+</option>
-                <option>AB-</option>
-                <option>O+</option>
-                <option>O-</option>
+              <select className="form-select"
+              name="blood">
+                <option disabled={true} >Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
               </select>
-            </div> */}
+            </div> 
             
           </div>
 
           
-          {/*  <div className="grid grid-cols-2" style={{ gap: "1rem" }}>
+            <div className="grid grid-cols-2" style={{ gap: "1rem" }}>
             <div className="form-group">
               <label className="form-label">District</label>
-              <select className="form-select">
-                <option>Select District</option>
-                <option>Dhaka</option>
-                <option>Chattogram</option>
-                <option>Rajshahi</option>
+              <select value={district} onChange={(e) => setDistrict(e.target.value)} className="form-select">
+                <option disabled selected value='' >Select District</option>
+                {
+                  districts.map(d => <option value={d?.name} key={d.id}>{d?.name }</option>)
+               }
               </select>
             </div>
 
             <div className="form-group">
               <label className="form-label">Upazila</label>
-              <select className="form-select">
-                <option>Select Upazila</option>
+              <select value={upazila} onChange={(e) => setUpazila(e.target.value)} className="form-select">
+                <option disabled selected value='' >Select Upazila</option>
+                {
+                  upazilas.map(u => <option value={u?.name} key={u.id}>{u?.name }</option>)
+               }
               </select>
             </div>
-          </div> */}
+          </div> 
 
          
           <div className="form-group">
