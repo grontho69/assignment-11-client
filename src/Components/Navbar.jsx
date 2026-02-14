@@ -80,7 +80,7 @@ const Navbar = () => {
           {user ? (
             <>
               <li>
-                <Link to="/dashboard/main" onClick={() => setMobileMenuOpen(false)}>
+                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                   <button className="btn btn-primary btn-sm">
                     <LayoutDashboard size={16} />
                     Dashboard

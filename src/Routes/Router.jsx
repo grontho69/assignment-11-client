@@ -8,6 +8,7 @@ import MainDashboard from "../Pages/Dashboard/MainDashboard";
 import DashAside from "../Components/DashAside/DashAside";
 import Profile from "../Pages/Dashboard/profile";
 import CreateRequest from "../Pages/Dashboard/CreateRequest";
+import MangeRequest from "../Pages/Dashboard/MangeRequest";
 
 const router = createBrowserRouter([
   {
@@ -31,10 +32,10 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/dashboard',
+    path: 'dashboard',
     element: <DashAside/>,
     children: [{
-      path: 'main',
+      path: '/dashboard',
       element:<MainDashboard/>
     },
     {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: 'create-request',
       element:<CreateRequest/>  
+      },
+      {
+        path: 'manage-request',
+      element:<MangeRequest/>  
       }
     
     

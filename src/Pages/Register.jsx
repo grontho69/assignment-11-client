@@ -41,7 +41,7 @@ const Register = () => {
     const password = e.target.password.value;
     const file = photoUrl.files[0]
     const phone = e.target.phone.value
-    const role = e.target.role.value
+    
     const blood = e.target.blood.value    
 
     const passCheck = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
@@ -65,7 +65,7 @@ const res = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade
       mainPhotoUrl,
       password,
       phone,
-      role,
+     
       blood,
       district,
       upazila
@@ -88,7 +88,7 @@ console.log(formData)
                 console.log(err)
               })
               setUser(null);
-             // navigate('/login')
+              navigate('/login')
              
             });
           })
@@ -224,17 +224,7 @@ console.log(formData)
           </div> 
 
          
-          <div className="form-group">
-            <label className="form-label">Register As</label>
-            <select className="form-select"
-            name="role">
-              <option value="donor">Donor</option>
-              <option value="volunteer">Volunteer</option>
-            </select>
-            <span className="form-hint">
-              Donors donate blood, Volunteers help organize events
-            </span>
-          </div>
+         
 
          
           <button type="submit" className="btn btn-primary w-full">
