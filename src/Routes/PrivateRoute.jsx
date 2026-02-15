@@ -6,7 +6,7 @@ import { ThreeCircles } from 'react-loader-spinner'
 
 const PrivateRoute = ({children}) => {
 
-  const {user,loading}=useContext(AuthContext)
+  const {user,loading,userStatus}=useContext(AuthContext)
 
 
   if (loading) {
@@ -23,7 +23,7 @@ wrapperClass=""
 />
     </div>
   }
-  if (!user) {
+  if (!user || !userStatus=='active' ) {
     return<Navigate to={'/login'}></Navigate>
   }
 
