@@ -52,7 +52,7 @@ const router = createBrowserRouter([
       element:<MangeRequest/>  
       },
       {
-        path: 'all-user',
+        path: 'all-users',
       element:<AllUsers/>  
       }
     
