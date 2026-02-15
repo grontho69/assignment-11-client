@@ -12,6 +12,8 @@ import AllUsers from "../Pages/Dashboard/AllUsers";
 import PrivateRoute from "./PrivateRoute";
 import MyRequest from "../Pages/Dashboard/MyRequest";
 import Funding from "../Pages/Funding";
+import DonationRequest from "../Pages/DonationRequest";
+import Search from "../Pages/Search";
 ;
 
 const router = createBrowserRouter([
@@ -34,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: "funding",
         element: <Funding />
+      },
+      {
+        path: "donation-requests",
+        element: <DonationRequest />
+      },
+      {
+        path: "search",
+        element: <Search />
       }
     ],
   },

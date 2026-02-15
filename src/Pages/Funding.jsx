@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useAxiosSecure from '../Hooks/useAxiosSecure';
+import useAxios from '../Hooks/useAxios';
+import { AuthContext } from '../Context/AuthContext';
 
 const Funding = () => {
     const axiosSecure = useAxiosSecure();
+    const axiosInstance = useAxios();
+    const { user } = useContext(AuthContext);
+    
     const [campaigns, setCampaigns] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCampaign, setSelectedCampaign] = useState(null);
     const [donationAmount, setDonationAmount] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
 
     const loadCampaigns = async () => {
         try {
@@ -28,7 +32,7 @@ const Funding = () => {
 
     const handleOpenModal = (campaign) => {
         setSelectedCampaign(campaign);
-        setDonationAmount(''); // Reset amount when opening
+        setDonationAmount(''); 
         setShowModal(true);
     };
 
@@ -37,31 +41,32 @@ const Funding = () => {
         setSelectedCampaign(null);
     };
 
+    
     const handleDonateSubmit = async (e) => {
         e.preventDefault();
-        const amount = parseInt(donationAmount);
         
+        const amount = parseInt(donationAmount);
         if (!amount || amount <= 0) {
             alert("Please enter a valid amount");
             return;
         }
 
-        try {
-            const res = await axiosSecure.post('/donate', {
-                campaignId: selectedCampaign._id,
-                amount: amount
-            });
+        const formData = {
+            donateAmount: amount,
+            donorEmail: user?.email,
+            donorName: user?.displayName,
+            campaignId: selectedCampaign?._id, 
+            campaignName: selectedCampaign?.title
+        };
 
-            if (res.data.modifiedCount > 0 || res.data.acknowledged) {
-                await loadCampaigns();
-                handleCloseModal();
-                setShowSuccess(true);
-                setTimeout(() => setShowSuccess(false), 4000);
-            }
-        } catch (err) {
-            console.error("Donation Error:", err);
-            alert("Something went wrong. Please try again.");
-        }
+         
+      axiosInstance.post('/create-payment-checkout', formData).then(res => {
+        console.log(res.data)
+          window.location.href= res.data.url
+        })
+          
+            
+           
     };
 
     if (loading) return <div style={{ textAlign: 'center', padding: '50px' }}>Loading Campaigns...</div>;
@@ -72,12 +77,6 @@ const Funding = () => {
                 <h1 style={{ fontSize: '2.5rem', color: '#333' }}>Funding Campaigns</h1>
                 <p style={{ color: '#666' }}>Your small contribution can save a life.</p>
             </div>
-
-            {showSuccess && (
-                <div style={{ background: '#d4edda', color: '#155724', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', border: '1px solid #c3e6cb' }}>
-                    🎉 Thank you! Your donation of ৳{donationAmount} was successful.
-                </div>
-            )}
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '25px' }}>
                 {campaigns.map((campaign) => {
@@ -141,9 +140,10 @@ const Funding = () => {
                                     ))}
                                 </div>
                                 
-                                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#444' }}>Custom Amount (BDT)</label>
+                                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#444' }}>Custom Amount</label>
                                 <input
                                     type="number"
+                                    name='donateAmount'
                                     placeholder="Enter amount"
                                     value={donationAmount}
                                     onChange={(e) => setDonationAmount(e.target.value)}
@@ -155,7 +155,7 @@ const Funding = () => {
 
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <button type="button" onClick={handleCloseModal} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid #ddd', background: '#f9f9f9', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
-                                <button type="submit" style={{ flex: 1, padding: '12px', borderRadius: '10px', border: 'none', background: '#e63946', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}>Donate</button>
+                                <button type="submit" style={{ flex: 1, padding: '12px', borderRadius: '10px', border: 'none', background: '#e63946', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}>Pay with Stripe</button>
                             </div>
                         </form>
                     </div>
