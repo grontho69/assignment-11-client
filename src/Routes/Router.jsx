@@ -11,6 +11,7 @@ import MangeRequest from "../Pages/Dashboard/MangeRequest";
 import AllUsers from "../Pages/Dashboard/AllUsers";
 import PrivateRoute from "./PrivateRoute";
 import MyRequest from "../Pages/Dashboard/MyRequest";
+import Funding from "../Pages/Funding";
 ;
 
 const router = createBrowserRouter([
@@ -18,9 +19,22 @@ const router = createBrowserRouter([
     path: "/",
     element: <Mainlayout />,
     children: [
-      { index: true, element: <Home /> },
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
+      {
+        index: true,
+        element: <Home />
+      },
+      {
+        path: "login",
+        element: <Login />
+      },
+      {
+        path: "register",
+        element: <Register />
+      },
+      {
+        path: "funding",
+        element: <Funding />
+      }
     ],
   },
   {
