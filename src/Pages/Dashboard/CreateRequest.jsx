@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../Context/AuthContext";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 
 const CreateRequest = () => {
@@ -12,7 +13,7 @@ const CreateRequest = () => {
 
   const {user}=useContext(AuthContext)
 
-
+const axiosSecure = useAxiosSecure()
 
 
 
@@ -58,7 +59,7 @@ const CreateRequest = () => {
     console.log(formData);
 
     
-      axios.post("http://localhost:3000/request", formData)
+      axiosSecure.post("/request", formData)
         .then((res) => {
           console.log(res.data)
       toast.success("Request create successfully")

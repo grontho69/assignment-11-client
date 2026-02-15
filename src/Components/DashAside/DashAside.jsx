@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 import {
   Home,
@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../../Context/AuthContext";
 import MainDashboard from "../../Pages/Dashboard/MainDashboard";
+import axios from "axios";
 
 
 const NavItem = ({ to, icon: Icon, label, onClick }) => {
@@ -34,6 +35,9 @@ const NavItem = ({ to, icon: Icon, label, onClick }) => {
 
 const DashAside = () => {
   const { user, signoutUserFunc } = useContext(AuthContext);
+
+  const [dbUser,setDbUser]=useState(null)
+
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -43,6 +47,19 @@ const DashAside = () => {
   };
 
   const closeSidebar = () => setSidebarOpen(false);
+
+  useEffect(() => {
+  if (user?.email) {
+    axios
+      .get(`http://localhost:3000/user/role/${user.email}`)
+      .then(res => {
+        setDbUser(res.data);
+      })
+      .catch(err => console.log(err));
+  }
+}, [user]);
+
+
 
   return (
     <div className="dashboard-layout">
@@ -72,14 +89,14 @@ const DashAside = () => {
           
           <div className="profile-badge">
             <div className="profile-avatar-small">
-              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+              {dbUser?.name?.charAt(0)?.toUpperCase() || "U"}
             </div>
             <div>
               <p className="font-semibold text-sm text-gray-900">
-                {user?.name}
+                {dbUser?.name}
               </p>
               <p className="text-xs text-gray-500 uppercase">
-                {user?.role}
+                {dbUser?.role}
               </p>
             </div>
           </div>
@@ -99,24 +116,13 @@ const DashAside = () => {
             label="My Profile"
             onClick={closeSidebar}
           />
-          <NavItem
-            to="/dashboard/create-request"
-            icon={PlusCircle}
-            label="Create Request"
-            onClick={closeSidebar}
-          />
-<NavItem
-            to="/dashboard/manage-request"
-            icon={PlusCircle}
-            label="All Request"
-            onClick={closeSidebar}
-          />
+         
 
 
 
 
 
-          {(user?.role === "donor" || user?.role === "volunteer") && (
+          {(dbUser?.role === "donor" || dbUser?.role === "volunteer") && (
             <>
               <div className="nav-divider">Requests</div>
               <NavItem
@@ -126,7 +132,7 @@ const DashAside = () => {
                 onClick={closeSidebar}
               />
               <NavItem
-                to="/dashboard/create-donation-request"
+                to="/dashboard/create-request"
                 icon={PlusCircle}
                 label="Create Request"
                 onClick={closeSidebar}
@@ -134,11 +140,11 @@ const DashAside = () => {
             </>
           )}
 
-          {(user?.role === "admin" || user?.role === "volunteer") && (
+          {(dbUser?.role === "admin" || dbUser?.role === "volunteer") && (
             <>
               <div className="nav-divider">Management</div>
               <NavItem
-                to="/dashboard/all-blood-donation-request"
+                to="/dashboard/manage-request"
                 icon={List}
                 label="All Requests"
                 onClick={closeSidebar}
@@ -146,7 +152,7 @@ const DashAside = () => {
             </>
           )}
 
-          {user?.role === "admin" && (
+          {dbUser?.role === "admin" && (
             <NavItem
               to="/dashboard/all-users"
               icon={Users}

@@ -9,6 +9,7 @@ import DashAside from "../Components/DashAside/DashAside";
 import Profile from "../Pages/Dashboard/profile";
 import CreateRequest from "../Pages/Dashboard/CreateRequest";
 import MangeRequest from "../Pages/Dashboard/MangeRequest";
+import AllUsers from "../Pages/Dashboard/AllUsers";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: 'manage-request',
       element:<MangeRequest/>  
+      },
+      {
+        path: 'all-user',
+      element:<AllUsers/>  
       }
     
     
