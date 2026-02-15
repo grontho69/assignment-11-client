@@ -10,7 +10,7 @@ const Home = () => {
 
   return (
     <div>
-      {/* Hero Section */}
+    
       <section className="hero">
         <div className="container">
           <h1 className="hero-title">Save Lives Through Blood Donation</h1>
@@ -41,7 +41,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+   
       <section className="stats-section">
         <div className="stats-grid">
           <div className="stat-card">
@@ -63,7 +63,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      
       <section className="features-section">
         <div className="container">
           <h2 className="section-title">Why Choose BloodConnect?</h2>
@@ -119,7 +119,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Call to Action */}
+    
       <section className="hero" style={{ padding: '3rem 1rem' }}>
         <div className="container">
           <h2 className="hero-title" style={{ fontSize: '2rem' }}>Ready to Make a Difference?</h2>

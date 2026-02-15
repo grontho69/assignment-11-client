@@ -1,14 +1,30 @@
-import React from "react";
+import React, {  useEffect, useState } from "react";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+
 
 const AllUsers = () => {
-  const users = [];
-  const currentUsers = users;
-  const filteredUsers = users;
+ 
+
   const totalPages = 1;
   const currentPage = 1;
 
   const getRoleBadge = () => "";
   const formatDate = () => "";
+
+  const axiosSecure = useAxiosSecure()
+  const [users, setUsers] = useState([])
+ 
+  
+
+  useEffect(() => {
+   
+    axiosSecure.get('/user')
+      .then(res => {
+      setUsers(res.data)
+    })
+  }, [axiosSecure ])
+  console.log(users)
+  
 
   return (
     <div>
@@ -19,7 +35,7 @@ const AllUsers = () => {
         </p>
       </div>
 
-      {/* Stats */}
+     
       <div className="dashboard-stats">
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-label">Total Users</div>
@@ -42,7 +58,7 @@ const AllUsers = () => {
         </div>
       </div>
 
-      {/* Filters and Search */}
+      
       <div className="card" style={{ marginBottom: "1.5rem" }}>
         <div className="card-body" style={{ padding: "1rem" }}>
           <div
@@ -72,11 +88,11 @@ const AllUsers = () => {
       </div>
 
       <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
-        Showing {currentUsers.length} of {filteredUsers.length} users
+        Showing {users.length} of {''} users
       </div>
 
-      {/* Users Table */}
-      {currentUsers.length === 0 ? (
+      
+      {users.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">👥</div>
           <h3 className="empty-state-title">No Users Found</h3>
@@ -99,38 +115,38 @@ const AllUsers = () => {
               </thead>
 
               <tbody>
-                {currentUsers.map((user) => (
+                {users.map((user) => (
                   <tr key={user.id}>
                     <td>
                       <div style={{ fontWeight: "600" }}>{user.name}</div>
                       <div style={{ fontSize: "0.75rem", color: "var(--text-gray)" }}>
-                        {user.email}
+                        {users.email}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--text-gray)" }}>
-                        {user.phone}
+                        {users.phone}
                       </div>
                     </td>
 
                     <td>
-                      <span className="badge badge-primary">{user.bloodGroup}</span>
+                      <span className="badge badge-primary">{users.blood}</span>
                     </td>
 
                     <td>
-                      <span className={`badge ${getRoleBadge(user.role)}`}>
-                        {user.role}
+                      <span className={`badge ${getRoleBadge(users.role)}`}>
+                        {users.role}
                       </span>
                     </td>
 
                     <td>
                       <div style={{ fontSize: "0.875rem" }}>
-                        {user.upazila}, {user.district}
+                        {users.upazila}, {users.district}
                       </div>
                     </td>
 
-                    <td>{formatDate(user.createdAt)}</td>
+                    <td>{formatDate(users.createdAt)}</td>
 
                     <td>
-                      {user.isBlocked ? (
+                      {users.status ? (
                         <span className="badge badge-danger">Blocked</span>
                       ) : (
                         <span className="badge badge-success">Active</span>

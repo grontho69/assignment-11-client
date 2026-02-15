@@ -10,7 +10,7 @@ const MangeRequest = () => {
         </p>
       </div>
 
-      {/* Stats */}
+      
       <div className="dashboard-stats">
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-label">Total Requests</div>
@@ -33,7 +33,7 @@ const MangeRequest = () => {
         </div>
       </div>
 
-      {/* Filters UI only */}
+      
       <div className="card" style={{ marginBottom: "1.5rem" }}>
         <div className="card-body">
           <div style={{ marginBottom: "1rem" }}>
@@ -86,7 +86,7 @@ const MangeRequest = () => {
         Showing {''} of {''} requests
       </div>
 
-      {/* Table */}
+      
       <div className="table-container">
         <table className="table">
           <thead>
@@ -164,7 +164,7 @@ const MangeRequest = () => {
         </table>
       </div>
 
-      {/* Pagination UI only */}
+      
       <div className="pagination">
         <button className="pagination-btn">← Previous</button>
         <button className="pagination-btn active">1</button>
