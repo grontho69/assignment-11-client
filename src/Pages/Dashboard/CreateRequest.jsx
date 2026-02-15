@@ -39,10 +39,12 @@ const axiosSecure = useAxiosSecure()
     const date = form.date.value;
     const address = form.address.value;
     const reason = form.reason.value;
+    const email = form.email.value;
 
     
     const formData = {
       name,
+      email,
       phone,
        blood,
        units:parseInt(units),
@@ -94,6 +96,17 @@ const axiosSecure = useAxiosSecure()
                   className="form-input"
                   placeholder="Patient or guardian name"
                   value={user?.displayName}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Requester Name *</label>
+                <input
+                  type="text"
+                  name="email"
+                  className="form-input"
+                  placeholder="email"
+                  value={user?.email}
                 />
               </div>
 

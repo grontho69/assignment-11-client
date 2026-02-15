@@ -1,178 +1,155 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
-const MangeRequest = () => {
-  return (
-     <div>
-      <div className="dashboard-header">
-        <h1 className="dashboard-title">All Blood Donation Requests</h1>
-        <p className="dashboard-subtitle">
-          Manage and approve blood donation requests
-        </p>
-      </div>
+const ManageRequest = () => {
+    const axiosSecure = useAxiosSecure();
+    const [requests, setRequests] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [stats, setStats] = useState({ pending: 0, approved: 0, completed: 0 });
+    const [statusFilter, setStatusFilter] = useState('All Status');
+    const [urgencyFilter, setUrgencyFilter] = useState('All Urgencies');
+    const [currentPage, setCurrentPage] = useState(1);
+    const size = 10;
 
-      
-      <div className="dashboard-stats">
-        <div className="dashboard-stat-card">
-          <div className="dashboard-stat-label">Total Requests</div>
-          <div className="dashboard-stat-value">{''}</div>
-        </div>
+    const fetchRequests = async () => {
+        try {
+            const res = await axiosSecure.get(`/all-requests?page=${currentPage - 1}&size=${size}&status=${statusFilter}&urgency=${urgencyFilter}`);
+            setRequests(res.data.requests || []);
+            setTotal(res.data.total || 0);
+            setStats(res.data.stats || { pending: 0, approved: 0, completed: 0 });
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-        <div className="dashboard-stat-card warning">
-          <div className="dashboard-stat-label">Pending</div>
-          <div className="dashboard-stat-value">0</div>
-        </div>
+    useEffect(() => {
+        fetchRequests();
+    }, []);
 
-        <div className="dashboard-stat-card info">
-          <div className="dashboard-stat-label">Approved</div>
-          <div className="dashboard-stat-value">0</div>
-        </div>
+    const handleStatusUpdate = async (id, newStatus) => {
+        try {
+            const res = await axiosSecure.patch(`/request-status/${id}`, { status: newStatus });
+            if (res.data.modifiedCount > 0) {
+                fetchRequests();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-        <div className="dashboard-stat-card success">
-          <div className="dashboard-stat-label">Completed</div>
-          <div className="dashboard-stat-value">0</div>
-        </div>
-      </div>
+    const numberOfPages = Math.ceil(total / size);
+    const pages = [...Array(numberOfPages || 0).keys()].map(e => e + 1);
 
-      
-      <div className="card" style={{ marginBottom: "1.5rem" }}>
-        <div className="card-body">
-          <div style={{ marginBottom: "1rem" }}>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="Search by requester name, phone, or hospital..."
-            />
-          </div>
-
-          <div className="filters-grid">
-            <div className="form-group">
-              <label className="form-label">Blood Group</label>
-              <select className="form-select">
-                <option>All Blood Groups</option>
-              </select>
+    return (
+        <div>
+            <div className="dashboard-header">
+                <h1 className="dashboard-title">All Blood Donation Requests</h1>
+                <p className="dashboard-subtitle">Manage and approve blood donation requests</p>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">District</label>
-              <select className="form-select">
-                <option>All Districts</option>
-              </select>
+            <div className="dashboard-stats">
+                <div className="dashboard-stat-card">
+                    <div className="dashboard-stat-label">Total Requests</div>
+                    <div className="dashboard-stat-value">{total}</div>
+                </div>
+                <div className="dashboard-stat-card warning">
+                    <div className="dashboard-stat-label">Pending</div>
+                    <div className="dashboard-stat-value">{stats.pending}</div>
+                </div>
+                <div className="dashboard-stat-card info">
+                    <div className="dashboard-stat-label">Approved</div>
+                    <div className="dashboard-stat-value">{stats.approved}</div>
+                </div>
+                <div className="dashboard-stat-card success">
+                    <div className="dashboard-stat-label">Completed</div>
+                    <div className="dashboard-stat-value">{stats.completed}</div>
+                </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Status</label>
-              <select className="form-select">
-                <option>All Status</option>
-              </select>
+            <div className="card" style={{ marginBottom: "1.5rem" }}>
+                <div className="card-body">
+                    <div className="filters-grid">
+                        <div className="form-group">
+                            <label className="form-label">Status</label>
+                            <select className="form-select" value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}>
+                                <option>All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                       
+                        <div style={{ display: "flex", alignItems: "flex-end" }}>
+                            <button className="btn btn-secondary w-full" onClick={() => { setStatusFilter('All Status'); setUrgencyFilter('All Urgencies'); setCurrentPage(1); }}>
+                                Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Urgency</label>
-              <select className="form-select">
-                <option>All Urgencies</option>
-              </select>
+            <div className="table-container">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Requester</th>
+                            <th>Blood</th>
+                            <th>Hospital</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {requests.map((request) => (
+                            <tr key={request._id}>
+                                <td>
+                                    <div style={{ fontWeight: "600" }}>{request.name}</div>
+                                    <div style={{ fontSize: "0.75rem", color: "gray" }}>{request.phone}</div>
+                                </td>
+                                <td>
+                                    <span className="badge badge-primary">{request.blood}</span>
+                                    <div style={{ fontSize: "0.7rem", color: "gray" }}>{request.units} Units</div>
+                                </td>
+                                <td>{request.hospname}</td>
+                                <td>{request.date}</td>
+                                <td>
+                                    <select 
+                                        className="form-select" 
+                                        style={{ fontSize: "0.75rem" }}
+                                        value={request.donation_status}
+                                        onChange={(e) => handleStatusUpdate(request._id, e.target.value)}
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <Link to={`/donation-requests/${request._id}`}>
+                                        <button className="btn btn-sm btn-outline">👁️</button>
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
 
-            <div style={{ display: "flex", alignItems: "flex-end" }}>
-              <button className="btn btn-secondary w-full">
-                Clear Filters
-              </button>
-            </div>
-          </div>
+            {numberOfPages > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+                    <button className="pagination-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>← Previous</button>
+                    {pages.map(p => (
+                        <button key={p} className={`pagination-btn ${currentPage === p ? 'active' : ''}`} onClick={() => setCurrentPage(p)}>{p}</button>
+                    ))}
+                    <button className="pagination-btn" disabled={currentPage === numberOfPages} onClick={() => setCurrentPage(currentPage + 1)}>Next →</button>
+                </div>
+            )}
         </div>
-      </div>
+    );
+};
 
-      <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
-        Showing {''} of {''} requests
-      </div>
-
-      
-      <div className="table-container">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Requester</th>
-              <th>Blood</th>
-              <th>Hospital</th>
-              <th>Location</th>
-              <th>Date</th>
-              <th>Urgency</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {(() => (
-              <tr key={''}>
-                <td>
-                  <div style={{ fontWeight: "600" }}>
-                    {''}
-                  </div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-gray)" }}>
-                    {''}
-                  </div>
-                </td>
-
-                <td>
-                  <span className="badge badge-primary">
-                    {''}
-                  </span>
-                  <div
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "var(--text-gray)",
-                      marginTop: "0.25rem",
-                    }}
-                  >
-                    {''} units
-                  </div>
-                </td>
-
-                <td>{''}</td>
-                <td>{''}, {''}</td>
-                <td>{''}</td>
-
-                <td>
-                  <span className="badge">{''}</span>
-                </td>
-
-                <td>
-                  <select
-                    className="form-select"
-                    style={{ fontSize: "0.75rem", padding: "0.25rem 0.5rem" }}
-                    defaultValue={''}
-                  >
-                    <option>Pending</option>
-                    <option>Approved</option>
-                    <option>Completed</option>
-                    <option>Cancelled</option>
-                  </select>
-                </td>
-
-                <td>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <Link to="#">
-                      <button className="btn btn-sm btn-outline">👁️</button>
-                    </Link>
-                    <button className="btn btn-sm btn-danger">🗑️</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      
-      <div className="pagination">
-        <button className="pagination-btn">← Previous</button>
-        <button className="pagination-btn active">1</button>
-        <button className="pagination-btn">2</button>
-        <button className="pagination-btn">Next →</button>
-      </div>
-    </div>
-  )
-}
-
-export default MangeRequest
+export default ManageRequest;
