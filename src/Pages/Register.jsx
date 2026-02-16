@@ -81,7 +81,7 @@ console.log(formData)
           .then(() => {
             signoutUserFunc().then(() => {
               toast.success("Signup successful! Please login.");
-              axios.post('http://localhost:3000/user', formData)
+              axios.post('https://blood-donation-backend-phi.vercel.app/user', formData)
                 .then(res => {
                 console.log(res.data)
                 }).catch(err => {

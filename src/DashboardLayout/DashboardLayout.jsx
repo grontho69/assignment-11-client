@@ -52,7 +52,7 @@ const DashboardLayout = () => {
   useEffect(() => {
   if (user?.email) {
     axios
-      .get(`http://localhost:3000/user/role/${user.email}`)
+      .get(`https://blood-donation-backend-phi.vercel.app/user/role/${user.email}`)
       .then(res => {
         setDbUser(res.data);
       })
