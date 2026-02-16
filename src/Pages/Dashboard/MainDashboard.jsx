@@ -1,47 +1,65 @@
-import React from 'react'
-import DashboardLayout from './../../DashboardLayout/DashboardLayout';
-import { Link } from 'react-router';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
+
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const MainDashboard = () => {
+
+  const axiosSecure = useAxiosSecure();
+
+  const [stats, setStats] = useState({});
+  const [recentRequests, setRecentRequests] = useState([]);
+
+  useEffect(() => {
+
+   
+    axiosSecure.get("/dashboard-stats")
+      .then(res => setStats(res.data))
+      .catch(err => console.log(err));
+
+    axiosSecure.get("/recent-requests?limit=5")
+      .then(res => setRecentRequests(res.data))
+      .catch(err => console.log(err));
+
+  }, [axiosSecure]);
+
+
   return (
     <div>
 
-      {/* Header */}
+    
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Welcome, USER_NAME!</h1>
-        <p className="dashboard-subtitle">
-          Role: USER_ROLE | Blood Group: BLOOD_GROUP
-        </p>
+        <h1 className="dashboard-title">Dashboard</h1>
       </div>
 
 
-      {/* Statistics Cards */}
+     
       <div className="dashboard-stats">
 
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-label">Total Donors</div>
-          <div className="dashboard-stat-value">0</div>
+          <div className="dashboard-stat-value">{stats.totalDonors || 0}</div>
         </div>
 
         <div className="dashboard-stat-card success">
           <div className="dashboard-stat-label">Total Volunteers</div>
-          <div className="dashboard-stat-value">0</div>
+          <div className="dashboard-stat-value">{stats.totalVolunteers || 0}</div>
         </div>
 
         <div className="dashboard-stat-card warning">
           <div className="dashboard-stat-label">Pending Requests</div>
-          <div className="dashboard-stat-value">0</div>
+          <div className="dashboard-stat-value">{stats.pendingRequests || 0}</div>
         </div>
 
         <div className="dashboard-stat-card info">
           <div className="dashboard-stat-label">Completed Requests</div>
-          <div className="dashboard-stat-value">0</div>
+          <div className="dashboard-stat-value">{stats.completedRequests || 0}</div>
         </div>
 
       </div>
 
 
-      {/* Quick Actions */}
+      
       <div className="card">
         <div className="card-header">
           <h2 className="card-title">Quick Actions</h2>
@@ -54,28 +72,12 @@ const MainDashboard = () => {
               <button className="btn btn-primary">👥 Manage Users</button>
             </Link>
 
-            <Link to="/dashboard/all-blood-donation-request">
+            <Link to="/dashboard/manage-request">
               <button className="btn btn-primary">📄 Manage Requests</button>
-            </Link>
-
-            <Link to="/donation-requests">
-              <button className="btn btn-outline">🔍 View Public Requests</button>
-            </Link>
-
-            <Link to="/dashboard/create-donation-request">
-              <button className="btn btn-primary">➕ Create Request</button>
-            </Link>
-
-            <Link to="/dashboard/my-donation-requests">
-              <button className="btn btn-primary">📋 My Requests</button>
             </Link>
 
             <Link to="/search">
               <button className="btn btn-outline">🔍 Search Donors</button>
-            </Link>
-
-            <Link to="/funding">
-              <button className="btn btn-outline">💰 View Funding</button>
             </Link>
 
           </div>
@@ -83,7 +85,7 @@ const MainDashboard = () => {
       </div>
 
 
-      {/* Recent Requests */}
+     
       <div className="card">
 
         <div className="card-header">
@@ -92,65 +94,43 @@ const MainDashboard = () => {
 
         <div className="card-body">
 
-          {/* Empty State */}
-          <div className="empty-state">
-            <div className="empty-state-icon">📋</div>
-            <h3 className="empty-state-title">No Requests Yet</h3>
-            <p className="empty-state-description">
-              Requests will appear here.
-            </p>
-          </div>
+          {recentRequests.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon">📋</div>
+              <h3>No Requests</h3>
+            </div>
+          ) : (
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Requester</th>
+                    <th>Blood</th>
+                    <th>Hospital</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
 
-          {/* Table Container */}
-          <div className="table-container">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Requester</th>
-                  <th>Blood Group</th>
-                  <th>Hospital</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                {/*
-                  BACKEND DATA WILL MAP HERE
-
-                  Example:
-
+                <tbody>
                   {recentRequests.map(req => (
                     <tr key={req._id}>
-                      <td>{req.requesterName}</td>
-                      <td><span className="badge badge-primary">{req.bloodGroup}</span></td>
-                      <td>{req.hospital}</td>
-                      <td>{req.date}</td>
-                      <td><span className="badge badge-success">{req.status}</span></td>
+                      <td>{req.name}</td>
+                      <td>{req.blood}</td>
+                      <td>{req.hospname}</td>
+                      <td>{req.donation_status}</td>
                     </tr>
                   ))}
-                */}
+                </tbody>
+              </table>
+            </div>
+          )}
 
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-
-
-        {/* Footer */}
-        <div className="card-footer">
-          <div></div>
-          <Link to="/dashboard/all-requests">
-            <button className="btn btn-outline btn-sm">View All →</button>
-          </Link>
         </div>
 
       </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default MainDashboard
+export default MainDashboard;
