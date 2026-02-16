@@ -43,7 +43,7 @@ const DonationRequest = () => {
       className="container"
       style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
     >
-      {/* Header */}
+   
       <div className="dashboard-header">
         <h1 className="dashboard-title">Blood Donation Requests</h1>
         <p className="dashboard-subtitle">
@@ -51,12 +51,11 @@ const DonationRequest = () => {
         </p>
       </div>
 
-      {/* Result count */}
       <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
         Total Requests: {requests.length}
       </div>
 
-      {/* Request list */}
+      
       <div className="grid grid-cols-1">
         {requests.length === 0 ? (
           <div className="empty-state">

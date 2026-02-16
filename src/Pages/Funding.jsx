@@ -111,7 +111,7 @@ const Funding = () => {
                 })}
             </div>
 
-            {/* MODAL SECTION */}
+            
             {showModal && (
                 <div 
                     onClick={handleCloseModal}

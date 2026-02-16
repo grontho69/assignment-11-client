@@ -37,12 +37,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="footer-bottom">
-        <p>
-          © 2026 BloodConnect. All rights reserved. Built for educational
-          purposes.
-        </p>
-      </div>
+      
     </footer>
   );
 };

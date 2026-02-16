@@ -39,14 +39,14 @@ const Login = () => {
   return (
   <div className="auth-container">
   <div className="auth-card">
-    {/* Header */}
+  
     <div className="auth-header">
       <div className="auth-logo">🩸 BloodConnect</div>
       <h2 className="auth-title">Welcome Back</h2>
       <p className="auth-subtitle">Login to your account</p>
     </div>
 
-    {/* Form */}
+    
     <form onSubmit={handleLogin}>
       <div className="form-group">
         <label className="form-label">Email Address</label>
@@ -72,7 +72,7 @@ const Login = () => {
 
    
 
-    {/* Footer */}
+  
     <div className="auth-footer">
       Don&apos;t have an account?
       <Link to="/register">Register here</Link>

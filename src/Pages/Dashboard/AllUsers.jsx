@@ -5,11 +5,11 @@ const AllUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [users, setUsers] = useState([]);
 
-  // Pagination mocks (You can implement actual logic later)
+  
   const totalPages = 1;
   const currentPage = 1;
 
-  // --- Helper Functions ---
+  
   const getRoleBadge = (role) => {
     if (role === 'admin') return 'badge-danger';
     if (role === 'volunteer') return 'badge-info';
@@ -21,7 +21,7 @@ const AllUsers = () => {
     return new Date(date).toLocaleDateString();
   };
 
-  // --- API Functions ---
+  
   const loadUsers = () => {
     axiosSecure.get('/user')
       .then(res => {
@@ -35,12 +35,11 @@ const AllUsers = () => {
   }, [axiosSecure]);
 
   const handleStatusChng = (email, newStatus) => {
-    // Matches Backend: app.patch('/update/user/status/:email', ...)
-    // Email goes in the PATH, status goes in the QUERY
+   
     axiosSecure.patch(`/update/user/status/${email}?status=${newStatus}`)
       .then(res => {
         if (res.data.modifiedCount > 0) {
-          // Update local state immediately so UI feels snappy
+       
           setUsers(prevUsers => 
             prevUsers.map(u => u.email === email ? { ...u, status: newStatus } : u)
           );
@@ -54,7 +53,7 @@ const AllUsers = () => {
 
   return (
     <div>
-      {/* Header Section */}
+
       <div className="dashboard-header">
         <h1 className="dashboard-title">All Users</h1>
         <p className="dashboard-subtitle">
@@ -62,7 +61,7 @@ const AllUsers = () => {
         </p>
       </div>
 
-      {/* Stats Section */}
+    
       <div className="dashboard-stats">
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-label">Total Users</div>
@@ -92,7 +91,6 @@ const AllUsers = () => {
       </div>
 
       
-      {/* Table Section */}
       {users.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">👥</div>

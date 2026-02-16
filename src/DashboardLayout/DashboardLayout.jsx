@@ -71,7 +71,7 @@ const DashboardLayout = () => {
         />
       )}
 
-      {/* Sidebar */}
+      
       <aside className={`dashboard-sidebar ${sidebarOpen ? "mobile-open" : ""}`}>
         <div className="dashboard-sidebar-header">
           <div className="flex justify-between items-start mb-3">

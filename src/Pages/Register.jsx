@@ -117,9 +117,9 @@ console.log(formData)
           </p>
         </div>
 
-        {/* Form */}
+        
         <form onSubmit={handleRegister}>
-          {/* Full Name */}
+        
           <div className="form-group">
             <label className="form-label">Full Name</label>
             <input
@@ -130,7 +130,7 @@ console.log(formData)
             />
           </div>
 
-          {/* Email */}
+          
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <input

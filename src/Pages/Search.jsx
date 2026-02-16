@@ -14,7 +14,7 @@ const Search = () => {
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
 
-  // load location data
+  
   useEffect(() => {
     axios.get("/district.json").then(res => {
       setDistricts(res.data.districts);
@@ -25,7 +25,7 @@ const Search = () => {
     });
   }, []);
 
-  // search submit
+  
   const handleSearch = async (e) => {
     e.preventDefault();
 
@@ -46,7 +46,7 @@ const Search = () => {
   return (
     <div className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
       
-      {/* Header */}
+    
       <div className="dashboard-header">
         <h1 className="dashboard-title">Search Blood Donors</h1>
         <p className="dashboard-subtitle">
@@ -54,12 +54,12 @@ const Search = () => {
         </p>
       </div>
 
-      {/* Search Form */}
+     
       <form onSubmit={handleSearch}>
         <div className="search-section">
           <div className="search-form">
 
-            {/* Blood */}
+            
             <div className="form-group">
               <label className="form-label">Blood Group</label>
               <select name="blood" className="form-select" defaultValue="">
@@ -75,7 +75,7 @@ const Search = () => {
               </select>
             </div>
 
-            {/* District */}
+           
             <div className="form-group">
               <label className="form-label">District</label>
               <select
@@ -90,7 +90,7 @@ const Search = () => {
               </select>
             </div>
 
-            {/* Upazila */}
+            
             <div className="form-group">
               <label className="form-label">Upazila</label>
               <select
@@ -113,14 +113,14 @@ const Search = () => {
         </div>
       </form>
 
-      {/* Result count */}
+     
       {searched && (
         <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
           Found {results.length} result{results.length !== 1 && "s"}
         </div>
       )}
 
-      {/* Results grid */}
+      
       <div className="grid grid-cols-3">
         {results.map(item => (
           <div key={item._id} className="card">
@@ -137,7 +137,7 @@ const Search = () => {
         ))}
       </div>
 
-      {/* Empty state */}
+      
       {searched && results.length === 0 && (
         <div className="empty-state">
           <div className="empty-state-icon">🔍</div>
