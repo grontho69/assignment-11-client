@@ -1,34 +1,51 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import useAxios from "../Hooks/useAxios";
 
-const Search = () => { 
- 
-  const [upazilas, setUpazilas] = useState([])
-  const [districts, setDistricts] = useState([])
-  const [district, setDistrict] = useState('')
-   const [upazila, setUpazila] = useState([])
-  
+const Search = () => {
+  const axiosInstance = useAxios();
+
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+
+  const [district, setDistrict] = useState("");
+  const [upazila, setUpazila] = useState("");
+
+  const [results, setResults] = useState([]);
+  const [searched, setSearched] = useState(false);
+
+  // load location data
   useEffect(() => {
-    axios.get('/upazila.json')
-      .then(res => {
-        setUpazilas(res.data.upazilas)
-      })
-     axios.get('/district.json')
-      .then(res => {
-        setDistricts(res.data.districts)
-      })
-    
-  }, [])
+    axios.get("/district.json").then(res => {
+      setDistricts(res.data.districts);
+    });
 
+    axios.get("/upazila.json").then(res => {
+      setUpazilas(res.data.upazilas);
+    });
+  }, []);
 
+  // search submit
+  const handleSearch = async (e) => {
+    e.preventDefault();
 
+    const blood = e.target.blood.value;
 
+    try {
+      const res = await axiosInstance.get(
+        `/search-request?blood=${encodeURIComponent(blood)}&district=${encodeURIComponent(district)}&upazila=${encodeURIComponent(upazila)}`
+      );
+
+      setResults(res.data);
+      setSearched(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <div
-      className="container"
-      style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
-    >
+    <div className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
+      
       {/* Header */}
       <div className="dashboard-header">
         <h1 className="dashboard-title">Search Blood Donors</h1>
@@ -37,15 +54,16 @@ const Search = () => {
         </p>
       </div>
 
-      {/* Search Form (UI only) */}
-      <div className="search-section">
-        <div className="search-form">
+      {/* Search Form */}
+      <form onSubmit={handleSearch}>
+        <div className="search-section">
+          <div className="search-form">
 
-          <div className="form-group">
+            {/* Blood */}
+            <div className="form-group">
               <label className="form-label">Blood Group</label>
-              <select className="form-select" defaultValue="Select Blood Group"
-              name="blood">
-                <option disabled={true} >Select Blood Group</option>
+              <select name="blood" className="form-select" defaultValue="">
+                <option value="" disabled>Select Blood Group</option>
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
                 <option value="B+">B+</option>
@@ -55,70 +73,81 @@ const Search = () => {
                 <option value="O+">O+</option>
                 <option value="O-">O-</option>
               </select>
-            </div> 
+            </div>
 
-         <div className="form-group">
+            {/* District */}
+            <div className="form-group">
               <label className="form-label">District</label>
-              <select value={district} onChange={(e) => setDistrict(e.target.value)} className="form-select">
-                <option disabled selected value='' >Select District</option>
-                {
-                  districts.map(d => <option value={d?.name} key={d.id}>{d?.name }</option>)
-               }
+              <select
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="form-select"
+              >
+                <option value="">Select District</option>
+                {districts.map(d => (
+                  <option key={d.id} value={d.name}>{d.name}</option>
+                ))}
               </select>
             </div>
 
-          <div className="form-group">
+            {/* Upazila */}
+            <div className="form-group">
               <label className="form-label">Upazila</label>
-              <select value={upazila} onChange={(e) => setUpazila(e.target.value)} className="form-select">
-                <option disabled selected value='' >Select Upazila</option>
-                {
-                  upazilas.map(u => <option value={u?.name} key={u.id}>{u?.name }</option>)
-               }
+              <select
+                value={upazila}
+                onChange={(e) => setUpazila(e.target.value)}
+                className="form-select"
+              >
+                <option value="">Select Upazila</option>
+                {upazilas.map(u => (
+                  <option key={u.id} value={u.name}>{u.name}</option>
+                ))}
               </select>
             </div>
 
-          <button className="btn btn-secondary">
-            Clear Filters
-          </button>
+            <button type="submit" className="btn btn-secondary">
+              Search
+            </button>
 
+          </div>
         </div>
-      </div>
+      </form>
 
-      {/* Result Count placeholder */}
-      <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
-        Found 0 donors
-      </div>
+      {/* Result count */}
+      {searched && (
+        <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
+          Found {results.length} result{results.length !== 1 && "s"}
+        </div>
+      )}
 
-      {/* Donor Grid Container */}
+      {/* Results grid */}
       <div className="grid grid-cols-3">
+        {results.map(item => (
+          <div key={item._id} className="card">
+            <h3 className="card-title">{item.name}</h3>
 
-        {/*
-          BACKEND DATA WILL MAP HERE
+            <div style={{ marginBottom: "0.5rem" }}>
+              <span className="badge badge-primary">{item.blood}</span>
+            </div>
 
-          Example:
-
-          {donors.map(donor => (
-            <DonorCard key={donor._id} data={donor} />
-          ))}
-        */}
-
+            <p>📞 {item.phone}</p>
+            <p>📍 {item.upazila}, {item.district}</p>
+            <p>🏥 {item.hospname}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Empty State UI */}
-      <div className="empty-state">
-        <div className="empty-state-icon">🔍</div>
-        <h3 className="empty-state-title">No Donors Found</h3>
-        <p className="empty-state-description">
-          Donor results will appear here after search.
-        </p>
-      </div>
+      {/* Empty state */}
+      {searched && results.length === 0 && (
+        <div className="empty-state">
+          <div className="empty-state-icon">🔍</div>
+          <h3 className="empty-state-title">No Donors Found</h3>
+          <p className="empty-state-description">
+            No data matched your search.
+          </p>
+        </div>
+      )}
 
-      {/* Pagination UI (visual only) */}
-      <div className="pagination">
-        <button className="pagination-btn">← Previous</button>
-        <button className="pagination-btn active">1</button>
-        <button className="pagination-btn">Next →</button>
-      </div>
     </div>
   );
 };
