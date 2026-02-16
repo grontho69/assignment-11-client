@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
+const userRoles = {
+  DONOR: "donor",
+  VOLUNTEER: "volunteer",
+  ADMIN: "admin",
+};
+
 const AllUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [users, setUsers] = useState([]);
 
-  
   const totalPages = 1;
   const currentPage = 1;
 
-  
   const getRoleBadge = (role) => {
     if (role === 'admin') return 'badge-danger';
     if (role === 'volunteer') return 'badge-info';
-    return 'badge-success'; // donor
+    return 'badge-success'; 
   };
 
   const formatDate = (date) => {
@@ -21,7 +25,6 @@ const AllUsers = () => {
     return new Date(date).toLocaleDateString();
   };
 
-  
   const loadUsers = () => {
     axiosSecure.get('/user')
       .then(res => {
@@ -35,11 +38,9 @@ const AllUsers = () => {
   }, [axiosSecure]);
 
   const handleStatusChng = (email, newStatus) => {
-   
     axiosSecure.patch(`/update/user/status/${email}?status=${newStatus}`)
       .then(res => {
         if (res.data.modifiedCount > 0) {
-       
           setUsers(prevUsers => 
             prevUsers.map(u => u.email === email ? { ...u, status: newStatus } : u)
           );
@@ -51,9 +52,29 @@ const AllUsers = () => {
       });
   };
 
+  const handleRoleChange = (email, newRole, userName) => {
+    if (!window.confirm(`Change role of ${userName} to ${newRole}?`)) return;
+
+    axiosSecure
+      .patch(`/update-user-role/${email}`, { role: newRole })
+      .then(res => {
+        if (res.data.result.modifiedCount > 0) {
+          setUsers(prevUsers =>
+            prevUsers.map(u =>
+              u.email === email ? { ...u, role: newRole.toLowerCase() } : u
+            )
+          );
+          alert(`Role of ${userName} changed to ${newRole}`);
+        }
+      })
+      .catch(err => {
+        console.error("Failed to change role:", err);
+        alert("Failed to change role.");
+      });
+  };
+
   return (
     <div>
-
       <div className="dashboard-header">
         <h1 className="dashboard-title">All Users</h1>
         <p className="dashboard-subtitle">
@@ -61,7 +82,6 @@ const AllUsers = () => {
         </p>
       </div>
 
-    
       <div className="dashboard-stats">
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-label">Total Users</div>
@@ -90,7 +110,6 @@ const AllUsers = () => {
         </div>
       </div>
 
-      
       {users.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">👥</div>
@@ -124,7 +143,23 @@ const AllUsers = () => {
                       <span className="badge badge-primary">{user.blood}</span>
                     </td>
                     <td>
-                      <span className={`badge ${getRoleBadge(user.role)}`}>{user.role}</span>
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.email, e.target.value, user.name)}
+                        className="form-select"
+                        style={{
+                          padding: '0.25rem 0.5rem',
+                          fontSize: '0.875rem',
+                          border: '1px solid var(--border-light)',
+                          borderRadius: '0.25rem',
+                          backgroundColor: 'white',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <option value={userRoles.DONOR}>Donor</option>
+                        <option value={userRoles.VOLUNTEER}>Volunteer</option>
+                        <option value={userRoles.ADMIN}>Admin</option>
+                      </select>
                     </td>
                     <td>
                       <div style={{ fontSize: "0.875rem" }}>
