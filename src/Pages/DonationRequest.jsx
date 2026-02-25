@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import useAxiosSecure from "../Hooks/useAxiosSecure";
+
+import { AuthContext } from "../Context/AuthContext";
+import useAxios from "../Hooks/useAxios";
+
 
 const DonationRequest = () => {
-  const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxios();
+ 
 
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +17,7 @@ const DonationRequest = () => {
     try {
       setLoading(true);
 
-      const res = await axiosSecure.get("/all-requests");
+      const res = await axiosPublic.get("/all-requests");
 
       // backend sends { requests: [...] }
       setRequests(res.data.requests || []);
@@ -27,7 +31,10 @@ const DonationRequest = () => {
   };
 
   useEffect(() => {
-    fetchRequests();
+    
+   fetchRequests();
+
+   
   }, []);
 
   if (loading) {

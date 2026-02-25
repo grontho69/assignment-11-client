@@ -14,7 +14,13 @@ const ManageRequest = () => {
 
     const fetchRequests = async () => {
         try {
-            const res = await axiosSecure.get(`/all-requests?page=${currentPage - 1}&size=${size}&status=${statusFilter}&urgency=${urgencyFilter}`);
+            const params = new URLSearchParams();
+            params.append('page', currentPage - 1);
+            params.append('size', size);
+            if (statusFilter !== 'All Status') params.append('status', statusFilter);
+            if (urgencyFilter !== 'All Urgencies') params.append('urgency', urgencyFilter);
+
+            const res = await axiosSecure.get(`/all-requests?${params.toString()}`);
             setRequests(res.data.requests || []);
             setTotal(res.data.total || 0);
             setStats(res.data.stats || { pending: 0, approved: 0, completed: 0 });
@@ -23,15 +29,16 @@ const ManageRequest = () => {
         }
     };
 
+    // Fetch data whenever page or filters change
     useEffect(() => {
         fetchRequests();
-    }, []);
+    }, [currentPage, statusFilter, urgencyFilter]);
 
     const handleStatusUpdate = async (id, newStatus) => {
         try {
             const res = await axiosSecure.patch(`/request-status/${id}`, { status: newStatus });
             if (res.data.modifiedCount > 0) {
-                fetchRequests();
+                fetchRequests(); // refresh list after update
             }
         } catch (err) {
             console.error(err);
@@ -72,7 +79,11 @@ const ManageRequest = () => {
                     <div className="filters-grid">
                         <div className="form-group">
                             <label className="form-label">Status</label>
-                            <select className="form-select" value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}>
+                            <select
+                                className="form-select"
+                                value={statusFilter}
+                                onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
+                            >
                                 <option>All Status</option>
                                 <option value="pending">Pending</option>
                                 <option value="approved">Approved</option>
@@ -80,9 +91,16 @@ const ManageRequest = () => {
                                 <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
-                       
+
                         <div style={{ display: "flex", alignItems: "flex-end" }}>
-                            <button className="btn btn-secondary w-full" onClick={() => { setStatusFilter('All Status'); setUrgencyFilter('All Urgencies'); setCurrentPage(1); }}>
+                            <button
+                                className="btn btn-secondary w-full"
+                                onClick={() => {
+                                    setStatusFilter('All Status');
+                                    setUrgencyFilter('All Urgencies');
+                                    setCurrentPage(1);
+                                }}
+                            >
                                 Clear Filters
                             </button>
                         </div>
@@ -116,8 +134,8 @@ const ManageRequest = () => {
                                 <td>{request.hospname}</td>
                                 <td>{request.date}</td>
                                 <td>
-                                    <select 
-                                        className="form-select" 
+                                    <select
+                                        className="form-select"
                                         style={{ fontSize: "0.75rem" }}
                                         value={request.donation_status}
                                         onChange={(e) => handleStatusUpdate(request._id, e.target.value)}
@@ -141,11 +159,29 @@ const ManageRequest = () => {
 
             {numberOfPages > 1 && (
                 <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
-                    <button className="pagination-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>← Previous</button>
+                    <button
+                        className="pagination-btn"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                        ← Previous
+                    </button>
                     {pages.map(p => (
-                        <button key={p} className={`pagination-btn ${currentPage === p ? 'active' : ''}`} onClick={() => setCurrentPage(p)}>{p}</button>
+                        <button
+                            key={p}
+                            className={`pagination-btn ${currentPage === p ? 'active' : ''}`}
+                            onClick={() => setCurrentPage(p)}
+                        >
+                            {p}
+                        </button>
                     ))}
-                    <button className="pagination-btn" disabled={currentPage === numberOfPages} onClick={() => setCurrentPage(currentPage + 1)}>Next →</button>
+                    <button
+                        className="pagination-btn"
+                        disabled={currentPage === numberOfPages}
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                        Next →
+                    </button>
                 </div>
             )}
         </div>

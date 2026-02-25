@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Select from "react-select"; // react-select ইমপোর্ট করা হয়েছে
 import useAxios from "../Hooks/useAxios";
 
 const Search = () => {
@@ -8,34 +9,44 @@ const Search = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
 
-  const [district, setDistrict] = useState("");
-  const [upazila, setUpazila] = useState("");
+  const [district, setDistrict] = useState(null); // জেলার অবজেক্ট {value, label}
+  const [upazila, setUpazila] = useState(null);   // উপজেলার অবজেক্ট {value, label}
 
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
 
-  
   useEffect(() => {
+    // ডিস্ট্রিক্ট ডেটা লোড
     axios.get("/district.json").then(res => {
-      setDistricts(res.data.districts);
+      const formattedDistricts = res.data.districts.map(d => ({
+        value: d.id,
+        label: d.name
+      }));
+      setDistricts(formattedDistricts);
     });
 
+    // উপজেলা ডেটা লোড
     axios.get("/upazila.json").then(res => {
       setUpazilas(res.data.upazilas);
     });
   }, []);
 
-  
+  // ১. সিলেক্ট করা ডিস্ট্রিক্ট আইডি অনুযায়ী উপজেলা ফিল্টার এবং ফরম্যাট করা
+  const filteredUpazilaOptions = district 
+    ? upazilas
+        .filter(u => u.district_id === district.value)
+        .map(u => ({ value: u.id, label: u.name }))
+    : [];
+
   const handleSearch = async (e) => {
     e.preventDefault();
-
     const blood = e.target.blood.value;
 
     try {
+      // ২. label থেকে নামগুলো নিয়ে কোয়েরি পাঠানো হচ্ছে
       const res = await axiosInstance.get(
-        `/search-request?blood=${encodeURIComponent(blood)}&district=${encodeURIComponent(district)}&upazila=${encodeURIComponent(upazila)}`
+        `/search-request?blood=${encodeURIComponent(blood)}&district=${encodeURIComponent(district?.label || "")}&upazila=${encodeURIComponent(upazila?.label || "")}`
       );
-
       setResults(res.data);
       setSearched(true);
     } catch (err) {
@@ -45,24 +56,18 @@ const Search = () => {
 
   return (
     <div className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
-      
-    
       <div className="dashboard-header">
         <h1 className="dashboard-title">Search Blood Donors</h1>
-        <p className="dashboard-subtitle">
-          Find blood donors in your area by blood group, district, and upazila
-        </p>
       </div>
 
-     
       <form onSubmit={handleSearch}>
         <div className="search-section">
-          <div className="search-form">
-
+          <div className="search-form" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', alignItems: 'end' }}>
             
+            {/* Blood Group Select */}
             <div className="form-group">
               <label className="form-label">Blood Group</label>
-              <select name="blood" className="form-select" defaultValue="">
+              <select name="blood" className="form-select" defaultValue="" required>
                 <option value="" disabled>Select Blood Group</option>
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
@@ -75,79 +80,49 @@ const Search = () => {
               </select>
             </div>
 
-           
+            {/* ৩. Searchable District Select */}
             <div className="form-group">
               <label className="form-label">District</label>
-              <select
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="form-select"
-              >
-                <option value="">Select District</option>
-                {districts.map(d => (
-                  <option key={d.id} value={d.name}>{d.name}</option>
-                ))}
-              </select>
+              <Select
+                options={districts}
+                isSearchable={true}
+                placeholder="Search District..."
+                onChange={(selected) => {
+                  setDistrict(selected);
+                  setUpazila(null); // জেলা বদলালে উপজেলা ক্লিয়ার হবে
+                }}
+              />
             </div>
 
-            
+            {/* ৪. Searchable Upazila Select */}
             <div className="form-group">
               <label className="form-label">Upazila</label>
-              <select
+              <Select
+                options={filteredUpazilaOptions}
+                isSearchable={true}
+                placeholder="Search Upazila..."
                 value={upazila}
-                onChange={(e) => setUpazila(e.target.value)}
-                className="form-select"
-              >
-                <option value="">Select Upazila</option>
-                {upazilas.map(u => (
-                  <option key={u.id} value={u.name}>{u.name}</option>
-                ))}
-              </select>
+                isDisabled={!district} // জেলা সিলেক্ট না করলে এটি বন্ধ থাকবে
+                onChange={(selected) => setUpazila(selected)}
+              />
             </div>
 
-            <button type="submit" className="btn btn-secondary">
-              Search
-            </button>
-
+            <button type="submit" className="btn btn-secondary" style={{ height: '40px' }}>Search</button>
           </div>
         </div>
       </form>
 
-     
-      {searched && (
-        <div style={{ marginBottom: "1rem", color: "var(--text-gray)" }}>
-          Found {results.length} result{results.length !== 1 && "s"}
-        </div>
-      )}
-
-      
-      <div className="grid grid-cols-3">
+      {/* ৫. রেজাল্ট ডিসপ্লে */}
+      <div style={{ marginTop: '30px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+        {searched && results.length === 0 && <p>No donors found.</p>}
         {results.map(item => (
-          <div key={item._id} className="card">
-            <h3 className="card-title">{item.name}</h3>
-
-            <div style={{ marginBottom: "0.5rem" }}>
-              <span className="badge badge-primary">{item.blood}</span>
-            </div>
-
-            <p>📞 {item.phone}</p>
+          <div key={item._id} className="card" style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '8px' }}>
+            <h3>{item.name}</h3>
+            <p>🩸 Blood: {item.bloodGroup}</p>
             <p>📍 {item.upazila}, {item.district}</p>
-            <p>🏥 {item.hospname}</p>
           </div>
         ))}
       </div>
-
-      
-      {searched && results.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-state-icon">🔍</div>
-          <h3 className="empty-state-title">No Donors Found</h3>
-          <p className="empty-state-description">
-            No data matched your search.
-          </p>
-        </div>
-      )}
-
     </div>
   );
 };

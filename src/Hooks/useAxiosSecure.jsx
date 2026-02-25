@@ -2,42 +2,44 @@ import axios from "axios";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../Context/AuthContext";
 
-
-
-
-
-
-
 const axiosSecure = axios.create({
-  baseURL: 'https://blood-donation-backend-phi.vercel.app'
-})
+  baseURL: "https://blood-donation-backend-phi.vercel.app/",
+});
 
 const useAxiosSecure = () => {
-
-const {user}=useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    const reqInterceptor = axiosSecure.interceptors.request.use(config => {
-      config.headers.Authorization = `Bearer ${user?.accessToken} `
-      
-      return config
-    })
+    const reqInterceptor = axiosSecure.interceptors.request.use(
+      async (config) => {
+        if (user) {
+          const token = await user.getIdToken(true); 
+          // true forces refresh if expired
 
-    const resInterceptor = axiosSecure.interceptors.response.use((response) => {
-      return response
-    },(err) => {
-      console.log(err)
-      return Promise.reject(err)
-    })
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    const resInterceptor = axiosSecure.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          console.log("Unauthorized – token invalid or expired");
+        }
+        return Promise.reject(error);
+      }
+    );
+
     return () => {
-      axiosSecure.interceptors.request.eject(reqInterceptor)
-       axiosSecure.interceptors.response.eject(resInterceptor)
-}
+      axiosSecure.interceptors.request.eject(reqInterceptor);
+      axiosSecure.interceptors.response.eject(resInterceptor);
+    };
+  }, [user]);
 
-  }, [user])
-  
-  return axiosSecure
+  return axiosSecure;
+};
 
-}
-
-export default useAxiosSecure
+export default useAxiosSecure;
