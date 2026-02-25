@@ -84,7 +84,7 @@ const MyRequest = () => {
         </div>
       </div>
 
-      {/* FIXED: Conditional Rendering - Show Empty State only if no requests found */}
+      
       {myRequest.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">📋</div>
@@ -142,14 +142,7 @@ const MyRequest = () => {
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <Link to={`/donation-requests/${request._id}`}>
-                          <button className="btn btn-sm btn-outline" title="View">👁️</button>
-                        </Link>
-                        {request.status === 'pending' && (
-                          <Link to={`/dashboard/edit-request/${request._id}`}>
-                            <button className="btn btn-sm btn-outline" title="Edit">✏️</button>
-                          </Link>
-                        )}
+                      
                         <button className="btn btn-sm btn-danger" title="Delete">🗑️</button>
                       </div>
                     </td>

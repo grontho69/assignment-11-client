@@ -5,7 +5,7 @@ import Login from "../Pages/Login";
 import Register from "../Pages/Register";
 import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
-import Profile from "../Pages/Dashboard/profile";
+import Profile from "../Pages/Dashboard/Profile";
 import CreateRequest from "../Pages/Dashboard/CreateRequest";
 import MangeRequest from "../Pages/Dashboard/MangeRequest";
 import AllUsers from "../Pages/Dashboard/AllUsers";

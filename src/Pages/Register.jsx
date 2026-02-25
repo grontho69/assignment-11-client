@@ -4,6 +4,7 @@ import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Select from "react-select"; 
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,7 @@ const Register = () => {
     signoutUserFunc,
     setUser,
   } = useContext(AuthContext);
+  const axiosSecure = {useAxiosSecure}
 
   const [upazilas, setUpazilas] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -101,7 +103,7 @@ const Register = () => {
               .then(() => {
                 signoutUserFunc().then(() => {
                   toast.success("Signup successful! Please login.");
-                  axios.post('https://blood-donation-backend-phi.vercel.app/user', formData)
+                  axiosSecure.post('/user', formData)
                     .then(res => {
                       console.log(res.data);
                     }).catch(err => {

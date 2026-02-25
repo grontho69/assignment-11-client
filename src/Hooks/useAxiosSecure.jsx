@@ -14,7 +14,7 @@ const useAxiosSecure = () => {
       async (config) => {
         if (user) {
           const token = await user.getIdToken(true); 
-          // true forces refresh if expired
+         
 
           config.headers.Authorization = `Bearer ${token}`;
         }

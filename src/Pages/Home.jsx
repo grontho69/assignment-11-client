@@ -1,16 +1,54 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router';
-
 import { AuthContext } from '../Context/AuthContext';
-
+import useAxiosSecure from '../Hooks/useAxiosSecure';
+;
 
 const Home = () => {
-  const { user,  } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const [users, setUsers] = useState([]);
+  const [pendingCount, setPendingCount] = useState(0);
+  const axiosSecure = useAxiosSecure();
+
   
+  const loadUsers = () => {
+    axiosSecure.get('/user')
+      .then(res => {
+        setUsers(res.data);
+      })
+      .catch(err => console.error("User loading requires login:", err));
+  };
+
+  
+  const loadStats = () => {
+  
+    axiosSecure.get('/all-requests')
+      .then(res => {
+        
+        setPendingCount(res.data.stats?.pending || 0);
+      })
+      .catch(err => console.error("Error loading public stats:", err));
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadUsers();
+    }
+    loadStats();
+  }, [axiosSecure, user]);
+
+  
+  const donorCount = users.length > 0 
+    ? users.filter(u => u.role === 'donor').length 
+    : 45; 
+
+  const volunteerCount = users.length > 0 
+    ? users.filter(u => u.role === 'volunteer').length 
+    : 12; 
 
   return (
     <div>
-    
+      
       <section className="hero">
         <div className="container">
           <h1 className="hero-title">Save Lives Through Blood Donation</h1>
@@ -24,7 +62,7 @@ const Home = () => {
                   <button className="btn btn-primary btn-lg">Go to Dashboard</button>
                 </Link>
                 <Link to="/donation-requests">
-                  <button className="btn btn-primary btn-lg">View Requests</button>
+                  <button className="btn btn-primary btn-lg" style={{marginLeft: '10px'}}>View Requests</button>
                 </Link>
               </>
             ) : (
@@ -33,7 +71,7 @@ const Home = () => {
                   <button className="btn btn-primary btn-lg">Register as Donor</button>
                 </Link>
                 <Link to="/search">
-                  <button className="btn btn-outline btn-lg">Search Donors</button>
+                  <button className="btn btn-outline btn-lg" style={{marginLeft: '10px'}}>Search Donors</button>
                 </Link>
               </>
             )}
@@ -41,29 +79,28 @@ const Home = () => {
         </div>
       </section>
 
-   
+      
       <section className="stats-section">
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-number">{''}+</div>
+            <div className="stat-number">{donorCount}+</div>
             <div className="stat-label">Active Donors</div>
           </div>
+          
           <div className="stat-card">
-            <div className="stat-number">{''}+</div>
-            <div className="stat-label">Lives Saved</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-number">{''}+</div>
+            <div className="stat-number">{volunteerCount}+</div>
             <div className="stat-label">Volunteers</div>
           </div>
+
           <div className="stat-card">
-            <div className="stat-number">{''}+</div>
+            
+            <div className="stat-number">{pendingCount}+</div>
             <div className="stat-label">Pending Requests</div>
           </div>
         </div>
       </section>
 
-      
+    
       <section className="features-section">
         <div className="container">
           <h2 className="section-title">Why Choose BloodConnect?</h2>
@@ -119,7 +156,7 @@ const Home = () => {
         </div>
       </section>
 
-    
+      
       <section className="hero" style={{ padding: '3rem 1rem' }}>
         <div className="container">
           <h2 className="hero-title" style={{ fontSize: '2rem' }}>Ready to Make a Difference?</h2>

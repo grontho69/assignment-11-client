@@ -2,30 +2,44 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../Context/AuthContext";
+
+import Select from "react-select"; 
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 
 const CreateRequest = () => {
   const [upazilas, setUpazilas] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [district, setDistrict] = useState("");
-  const [upazila, setUpazila] = useState("");
+  const axiosSecure = useAxiosSecure()
+  
+ 
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedUpazila, setSelectedUpazila] = useState(null);
 
   const {user}=useContext(AuthContext)
 
-const axiosSecure = useAxiosSecure()
-
-
-
   useEffect(() => {
-    axios.get("/upazila.json").then((res) => {
-      setUpazilas(res.data?.upazilas || []);
+   
+    axios.get('/district.json').then(res => {
+      const formattedDistricts = res.data.districts.map(d => ({
+        value: d.id,
+        label: d.name
+      }));
+      setDistricts(formattedDistricts);
     });
 
-    axios.get("/district.json").then((res) => {
-      setDistricts(res.data?.districts || []);
+    
+    axios.get('/upazila.json').then(res => {
+      setUpazilas(res.data.upazilas);
     });
   }, []);
+
+  
+  const filteredUpazilaOptions = selectedDistrict
+    ? upazilas
+        .filter(u => u.district_id === selectedDistrict.value)
+        .map(u => ({ value: u.id, label: u.name }))
+    : [];
 
   const handelRequest = (e) => {
     e.preventDefault();
@@ -51,8 +65,8 @@ const axiosSecure = useAxiosSecure()
       urgency,
       date,
       hospname,
-      district,
-      upazila,
+      district:selectedDistrict.lable,
+      upazila: selectedUpazila.label,
       address,
       reason,
       donation_status:'pending',
@@ -185,34 +199,33 @@ const axiosSecure = useAxiosSecure()
 
               <div className="form-group">
                 <label className="form-label">District</label>
-                <select
-                  value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
-                  className="form-select"
-                >
-                  <option value="">Select District</option>
-                  {districts.map((d) => (
-                    <option key={d.id} value={d.name}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
+                <Select
+                options={districts}
+                isSearchable={true}
+                placeholder="Type District..."
+                onChange={(selected) => {
+                  setSelectedDistrict(selected);
+                  setSelectedUpazila(null); 
+                }}
+                styles={{
+                  control: (base) => ({ ...base, height: '42px', borderRadius: '8px' })
+                }}
+              />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Upazila</label>
-                <select
-                  value={upazila}
-                  onChange={(e) => setUpazila(e.target.value)}
-                  className="form-select"
-                >
-                  <option value="">Select Upazila</option>
-                  {upazilas.map((u) => (
-                    <option key={u.id} value={u.name}>
-                      {u.name}
-                    </option>
-                  ))}
-                </select>
+               <Select
+                options={filteredUpazilaOptions}
+                isSearchable={true}
+                placeholder="Type Upazila..."
+                value={selectedUpazila}
+                isDisabled={!selectedDistrict} 
+                onChange={(selected) => setSelectedUpazila(selected)}
+                styles={{
+                  control: (base) => ({ ...base, height: '42px', borderRadius: '8px' })
+                }}
+              />
               </div>
 
               <div className="form-group">

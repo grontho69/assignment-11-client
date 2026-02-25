@@ -29,7 +29,7 @@ const ManageRequest = () => {
         }
     };
 
-    // Fetch data whenever page or filters change
+    
     useEffect(() => {
         fetchRequests();
     }, [currentPage, statusFilter, urgencyFilter]);
@@ -38,7 +38,7 @@ const ManageRequest = () => {
         try {
             const res = await axiosSecure.patch(`/request-status/${id}`, { status: newStatus });
             if (res.data.modifiedCount > 0) {
-                fetchRequests(); // refresh list after update
+                fetchRequests(); 
             }
         } catch (err) {
             console.error(err);
