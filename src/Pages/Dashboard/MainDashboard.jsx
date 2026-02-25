@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import { AuthContext } from "../../Context/AuthContext";
+import axios from "axios";
 
 const MainDashboard = () => {
 
   const axiosSecure = useAxiosSecure();
+  const [dbUser, setDbUser] = useState(null)
+  const { user} = useContext(AuthContext);
 
   const [stats, setStats] = useState({});
   const [recentRequests, setRecentRequests] = useState([]);
@@ -22,6 +26,16 @@ const MainDashboard = () => {
       .catch(err => console.log(err));
 
   }, [axiosSecure]);
+   useEffect(() => {
+  if (user?.email) {
+   
+       axios.get(`https://blood-connect-server-peach.vercel.app/user/role/${user.email}`)
+      .then(res => {
+        setDbUser(res.data);
+      })
+      .catch(err => console.log(err));
+  }
+}, [user]);
 
 
   return (
@@ -67,14 +81,19 @@ const MainDashboard = () => {
 
         <div className="card-body">
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-
-            <Link to="/dashboard/all-users">
+            {(dbUser?.role === "admin" || dbUser?.role === "volunteer") && (
+            <>
+              <Link to="/dashboard/all-users">
               <button className="btn btn-primary">👥 Manage Users</button>
             </Link>
 
             <Link to="/dashboard/manage-request">
               <button className="btn btn-primary">📄 Manage Requests</button>
             </Link>
+            </>
+          )}
+
+           
 
             <Link to="/search">
               <button className="btn btn-outline">🔍 Search Donors</button>

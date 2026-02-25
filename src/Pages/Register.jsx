@@ -14,7 +14,7 @@ const Register = () => {
     signoutUserFunc,
     setUser,
   } = useContext(AuthContext);
-  const axiosSecure = {useAxiosSecure}
+  const axiosSecure = useAxiosSecure()
 
   const [upazilas, setUpazilas] = useState([]);
   const [districts, setDistricts] = useState([]);

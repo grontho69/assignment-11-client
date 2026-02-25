@@ -35,7 +35,7 @@ const AllUsers = () => {
 
   useEffect(() => {
     loadUsers();
-  }, [axiosSecure]);
+  }, []);
 
   const handleStatusChng = (email, newStatus) => {
     axiosSecure.patch(`/update/user/status/${email}?status=${newStatus}`)
@@ -55,8 +55,8 @@ const AllUsers = () => {
   const handleRoleChange = (email, newRole, userName) => {
     if (!window.confirm(`Change role of ${userName} to ${newRole}?`)) return;
 
-    axiosSecure
-      .patch(`/update-user-role/${email}`, { role: newRole })
+   
+       axiosSecure.patch(`/update-user-role/${email}`, { role: newRole })
       .then(res => {
         if (res.data.result.modifiedCount > 0) {
           setUsers(prevUsers =>
