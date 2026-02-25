@@ -20,7 +20,7 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* Global Styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -37,7 +37,7 @@ body {
   line-height: 1.6;
 }
 
-/* Container */
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -45,7 +45,6 @@ body {
   padding: 0 1rem;
 }
 
-/* Navbar Styles */
 .navbar {
   background-color: var(--bg-light);
   box-shadow: var(--shadow-sm);
@@ -129,7 +128,7 @@ body {
   }
 }
 
-/* Button Styles */
+
 .btn {
   padding: 0.625rem 1.25rem;
   border-radius: 0.375rem;
@@ -208,7 +207,7 @@ body {
   cursor: not-allowed;
 }
 
-/* Card Styles */
+
 .card {
   background-color: var(--bg-light);
   border-radius: 0.5rem;
@@ -248,7 +247,7 @@ body {
   align-items: center;
 }
 
-/* Form Styles */
+
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -301,7 +300,7 @@ body {
   display: block;
 }
 
-/* Hero Section */
+
 .hero {
   background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
   color: white;
@@ -339,7 +338,7 @@ body {
   }
 }
 
-/* Stats Section */
+
 .stats-section {
   padding: 3rem 1rem;
   background-color: var(--bg-light);
@@ -381,7 +380,7 @@ body {
   font-weight: 500;
 }
 
-/* Features Section */
+
 .features-section {
   padding: 4rem 1rem;
   background-color: var(--bg-gray);
@@ -436,7 +435,7 @@ body {
   line-height: 1.6;
 }
 
-/* Dashboard Layout */
+
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
@@ -587,7 +586,7 @@ body {
   }
 }
 
-/* Table Styles */
+
 .table-container {
   background-color: var(--bg-light);
   border-radius: 0.5rem;
@@ -639,7 +638,7 @@ body {
   }
 }
 
-/* Badge Styles */
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -675,7 +674,7 @@ body {
   color: #1E40AF;
 }
 
-/* Pagination */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -718,7 +717,7 @@ body {
   font-size: 0.875rem;
 }
 
-/* Footer */
+
 .footer {
   background-color: var(--text-dark);
   color: var(--bg-light);
@@ -769,7 +768,7 @@ body {
 
 
 
-/* Modal/Dialog */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -812,7 +811,7 @@ body {
   gap: 1rem;
 }
 
-/* Alert Styles */
+
 .alert {
   padding: 1rem 1.25rem;
   border-radius: 0.375rem;
@@ -844,7 +843,7 @@ body {
   border-color: var(--info-blue);
 }
 
-/* Search Section */
+
 .search-section {
   padding: 2rem 1rem;
   background-color: var(--bg-light);
@@ -864,7 +863,7 @@ body {
   margin-bottom: 0;
 }
 
-/* Donation Request Card */
+
 .donation-card {
   background-color: var(--bg-light);
   border-radius: 0.5rem;
@@ -929,7 +928,7 @@ body {
   gap: 1rem;
 }
 
-/* Grid Layouts */
+
 .grid {
   display: grid;
   gap: 1.5rem;
@@ -960,7 +959,7 @@ body {
   }
 }
 
-/* Loading Spinner */
+
 .loading {
   display: flex;
   justify-content: center;
@@ -986,7 +985,7 @@ body {
   }
 }
 
-/* Empty State */
+
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -1010,7 +1009,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* User Profile */
+
 .profile-section {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -1068,7 +1067,7 @@ body {
   }
 }
 
-/* Filters */
+
 .filters-section {
   background-color: var(--bg-light);
   padding: 1.5rem;
@@ -1085,7 +1084,7 @@ body {
   align-items: end;
 }
 
-/* Dashboard Stats */
+
 .dashboard-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1127,7 +1126,7 @@ body {
   color: var(--text-dark);
 }
 
-/* Auth Pages */
+
 .auth-container {
   min-height: 100vh;
   display: flex;
@@ -1264,7 +1263,7 @@ body {
   color: var(--primary-red);
 }
 
-/* Utility Classes */
+
 .text-center {
   text-align: center;
 }
@@ -1349,7 +1348,7 @@ body {
   display: none;
 }
 
-/* Responsive Utilities */
+
 @media (max-width: 640px) {
   .hide-mobile {
     display: none;
@@ -1541,25 +1540,21 @@ body {
     line-height: 1.5;
   }
 
-  /* ===============================
-   GLOBAL MOBILE SCROLL FIX
-================================ */
+
 html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
 
-/* Prevent accidental overflow */
+
 * {
   max-width: 100%;
 }
 
-/* ===============================
-   DASHBOARD MOBILE FIXES
-================================ */
+
 @media (max-width: 768px) {
 
-  /* Dashboard layout */
+
   .dashboard-layout {
     flex-direction: column;
     overflow-x: hidden;
@@ -1587,13 +1582,12 @@ html, body {
     font-size: 1.5rem;
   }
 
-  /* Sidebar */
+
   .dashboard-sidebar {
     width: 260px;
     max-width: 80%;
   }
 
-  /* Stats cards */
   .dashboard-stats {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -1608,9 +1602,7 @@ html, body {
   }
 }
 
-/* ===============================
-   TABLE RESPONSIVE FIX
-================================ */
+
 @media (max-width: 768px) {
   .table-container {
     width: 100%;
@@ -1623,9 +1615,7 @@ html, body {
   }
 }
 
-/* ===============================
-   CARD & GRID FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .card {
@@ -1645,9 +1635,7 @@ html, body {
   }
 }
 
-/* ===============================
-   FILTERS & FORMS FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .filters-grid,
@@ -1664,9 +1652,7 @@ html, body {
   }
 }
 
-/* ===============================
-   FOOTER MOBILE FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .footer {
@@ -1684,9 +1670,7 @@ html, body {
   }
 }
 
-/* ===============================
-   DONATION CARD FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .donation-card-header {
@@ -1700,9 +1684,7 @@ html, body {
   }
 }
 
-/* ===============================
-   PROFILE PAGE FIX
-================================ */
+
 @media (max-width: 768px) {
 
   .profile-avatar {
@@ -1716,9 +1698,7 @@ html, body {
   }
 }
 
-/* ===============================
-   PAGINATION FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .pagination {
@@ -1731,9 +1711,7 @@ html, body {
   }
 }
 
-/* ===============================
-   AUTH PAGES FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .auth-card {
@@ -1745,9 +1723,7 @@ html, body {
   }
 }
 
-/* ===============================
-   FUNDING PAGE FIX
-================================ */
+
 @media (max-width: 640px) {
 
   .funding-grid {
@@ -1758,9 +1734,7 @@ html, body {
     height: 160px;
   }
 }
-/* ==============================
-   FOOTER — HARD MOBILE OVERRIDE
-============================== */
+
 
 @media (max-width: 640px) {
 
@@ -1770,7 +1744,7 @@ html, body {
   }
 
   .footer-content {
-    display: block !important;   /* grid forcefully off */
+    display: block !important;   
     width: 100%;
   }
 
@@ -1801,7 +1775,7 @@ html, body {
   }
 }
 
-/* absolute last safety */
+
 html, body {
   overflow-x: hidden;
 }

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
-import Select from "react-select"; // ১. react-select ইমপোর্ট করা হয়েছে
+import Select from "react-select"; 
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,14 +17,14 @@ const Register = () => {
   const [upazilas, setUpazilas] = useState([]);
   const [districts, setDistricts] = useState([]);
   
-  // ডিস্ট্রিক্ট এবং উপজেলা এখন অবজেক্ট হিসেবে থাকবে { value, label }
+ 
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedUpazila, setSelectedUpazila] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // ডিস্ট্রিক্ট ডেটা লোড এবং ফরম্যাট
+   
     axios.get('/district.json').then(res => {
       const formattedDistricts = res.data.districts.map(d => ({
         value: d.id,
@@ -33,13 +33,13 @@ const Register = () => {
       setDistricts(formattedDistricts);
     });
 
-    // উপজেলা ডেটা লোড
+    
     axios.get('/upazila.json').then(res => {
       setUpazilas(res.data.upazilas);
     });
   }, []);
 
-  // ২. সিলেক্ট করা ডিস্ট্রিক্ট আইডি অনুযায়ী উপজেলা ফিল্টার করা
+  
   const filteredUpazilaOptions = selectedDistrict
     ? upazilas
         .filter(u => u.district_id === selectedDistrict.value)
@@ -56,7 +56,7 @@ const Register = () => {
     const phone = e.target.phone.value;
     const blood = e.target.blood.value;
 
-    // ভ্যালিডেশন: জেলা ও উপজেলা সিলেক্ট করা হয়েছে কিনা
+   
     if (!selectedDistrict || !selectedUpazila) {
       toast.error("Please select both District and Upazila");
       return;
@@ -71,14 +71,14 @@ const Register = () => {
     }
 
     try {
-      // ইমেজ আপলোড
+      
       const imgFormData = new FormData();
       imgFormData.append('image', file);
       
       const imgRes = await axios.post(`https://api.imgbb.com/1/upload?key=c8b6debf6280ade9dbfbce13a28e3e0d`, imgFormData);
       const mainPhotoUrl = imgRes.data.data.display_url;
 
-      // ৩. ডাটাবেজে পাঠানোর জন্য অবজেক্ট
+      
       const formData = {
         email,
         name,
@@ -86,8 +86,8 @@ const Register = () => {
         password,
         phone,
         blood,
-        district: selectedDistrict.label, // জেলার নাম
-        upazila: selectedUpazila.label,   // উপজেলার নাম
+        district: selectedDistrict.label, 
+        upazila: selectedUpazila.label,   
         status: "active",
         role: "donor"
       };
@@ -186,7 +186,7 @@ const Register = () => {
             </div>
           </div>
 
-          {/* ৪. ডিস্ট্রিক্ট এবং উপজেলা টাইপ করে খোঁজার অংশ */}
+       
           <div className="grid grid-cols-2" style={{ gap: "1rem", marginBottom: "1.5rem" }}>
             <div className="form-group">
               <label className="form-label">District</label>
@@ -196,7 +196,7 @@ const Register = () => {
                 placeholder="Type District..."
                 onChange={(selected) => {
                   setSelectedDistrict(selected);
-                  setSelectedUpazila(null); // ডিস্ট্রিক্ট বদলালে উপজেলা ক্লিয়ার হবে
+                  setSelectedUpazila(null); 
                 }}
                 styles={{
                   control: (base) => ({ ...base, height: '42px', borderRadius: '8px' })
@@ -211,7 +211,7 @@ const Register = () => {
                 isSearchable={true}
                 placeholder="Type Upazila..."
                 value={selectedUpazila}
-                isDisabled={!selectedDistrict} // জেলা সিলেক্ট না করা পর্যন্ত বন্ধ থাকবে
+                isDisabled={!selectedDistrict} 
                 onChange={(selected) => setSelectedUpazila(selected)}
                 styles={{
                   control: (base) => ({ ...base, height: '42px', borderRadius: '8px' })

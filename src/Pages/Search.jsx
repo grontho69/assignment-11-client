@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Select from "react-select"; // react-select ইমপোর্ট করা হয়েছে
+import Select from "react-select";
 import useAxios from "../Hooks/useAxios";
 
 const Search = () => {
@@ -9,14 +9,14 @@ const Search = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
 
-  const [district, setDistrict] = useState(null); // জেলার অবজেক্ট {value, label}
-  const [upazila, setUpazila] = useState(null);   // উপজেলার অবজেক্ট {value, label}
+  const [district, setDistrict] = useState(null); 
+  const [upazila, setUpazila] = useState(null);   
 
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    // ডিস্ট্রিক্ট ডেটা লোড
+ 
     axios.get("/district.json").then(res => {
       const formattedDistricts = res.data.districts.map(d => ({
         value: d.id,
@@ -25,13 +25,13 @@ const Search = () => {
       setDistricts(formattedDistricts);
     });
 
-    // উপজেলা ডেটা লোড
+ 
     axios.get("/upazila.json").then(res => {
       setUpazilas(res.data.upazilas);
     });
   }, []);
 
-  // ১. সিলেক্ট করা ডিস্ট্রিক্ট আইডি অনুযায়ী উপজেলা ফিল্টার এবং ফরম্যাট করা
+
   const filteredUpazilaOptions = district 
     ? upazilas
         .filter(u => u.district_id === district.value)
@@ -43,7 +43,7 @@ const Search = () => {
     const blood = e.target.blood.value;
 
     try {
-      // ২. label থেকে নামগুলো নিয়ে কোয়েরি পাঠানো হচ্ছে
+      
       const res = await axiosInstance.get(
         `/search-request?blood=${encodeURIComponent(blood)}&district=${encodeURIComponent(district?.label || "")}&upazila=${encodeURIComponent(upazila?.label || "")}`
       );
@@ -64,7 +64,7 @@ const Search = () => {
         <div className="search-section">
           <div className="search-form" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', alignItems: 'end' }}>
             
-            {/* Blood Group Select */}
+           
             <div className="form-group">
               <label className="form-label">Blood Group</label>
               <select name="blood" className="form-select" defaultValue="" required>
@@ -80,7 +80,7 @@ const Search = () => {
               </select>
             </div>
 
-            {/* ৩. Searchable District Select */}
+           
             <div className="form-group">
               <label className="form-label">District</label>
               <Select
@@ -89,12 +89,12 @@ const Search = () => {
                 placeholder="Search District..."
                 onChange={(selected) => {
                   setDistrict(selected);
-                  setUpazila(null); // জেলা বদলালে উপজেলা ক্লিয়ার হবে
+                  setUpazila(null); 
                 }}
               />
             </div>
 
-            {/* ৪. Searchable Upazila Select */}
+           
             <div className="form-group">
               <label className="form-label">Upazila</label>
               <Select
@@ -102,7 +102,7 @@ const Search = () => {
                 isSearchable={true}
                 placeholder="Search Upazila..."
                 value={upazila}
-                isDisabled={!district} // জেলা সিলেক্ট না করলে এটি বন্ধ থাকবে
+                isDisabled={!district} 
                 onChange={(selected) => setUpazila(selected)}
               />
             </div>
@@ -112,7 +112,7 @@ const Search = () => {
         </div>
       </form>
 
-      {/* ৫. রেজাল্ট ডিসপ্লে */}
+      
       <div style={{ marginTop: '30px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
         {searched && results.length === 0 && <p>No donors found.</p>}
         {results.map(item => (
