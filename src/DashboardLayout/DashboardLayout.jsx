@@ -52,7 +52,7 @@ const DashboardLayout = () => {
   useEffect(() => {
   if (user?.email) {
    
-       axios.get(`https://blood-connect-server-peach.vercel.app/user/role/${user.email}`)
+        axios.get(`https://blood-connect-server-peach.vercel.app/user/role/${user.email}`)
       .then(res => {
         setDbUser(res.data);
       })

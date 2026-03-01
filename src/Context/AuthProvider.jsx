@@ -66,13 +66,14 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!user) return
-     axios.get(`https://blood-donation-backend-phi.vercel.app/user/role/${user.email}`)
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://blood-connect-server-peach.vercel.app';
+      axios.get(`${apiUrl}/user/role/${user.email}`)
         .then(res => {
           setRole(res.data.role)
           setUserStatus(res.data.status)
         })
   }, [user])
-  console.log(role)
+
 
   const authInfo = {
     user,

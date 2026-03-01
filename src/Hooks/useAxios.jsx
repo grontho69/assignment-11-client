@@ -5,9 +5,8 @@ import axios from 'axios';
 
 
 const axiosPublic = axios.create({
-  baseURL: 'https://blood-connect-server-peach.vercel.app/',
+  baseURL: import.meta.env.VITE_API_URL || 'https://backend-pi-peach.vercel.app/',
   timeout: 10000,
-  headers: {'X-Custom-Header': 'foobar'}
 });
 
 const useAxios = () => {

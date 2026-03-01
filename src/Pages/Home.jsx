@@ -2,13 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { AuthContext } from '../Context/AuthContext';
 import useAxiosSecure from '../Hooks/useAxiosSecure';
-;
+import useAxios from '../Hooks/useAxios';
 
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [pendingCount, setPendingCount] = useState(0);
   const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxios();
 
   
   const loadUsers = () => {
@@ -22,7 +23,7 @@ const Home = () => {
   
   const loadStats = () => {
   
-    axiosSecure.get('/all-requests')
+    axiosPublic.get('/all-requests')
       .then(res => {
         
         setPendingCount(res.data.stats?.pending || 0);
@@ -35,7 +36,7 @@ const Home = () => {
       loadUsers();
     }
     loadStats();
-  }, [axiosSecure, user]);
+  }, [axiosSecure, axiosPublic, user]);
 
   
   const donorCount = users.length > 0 
